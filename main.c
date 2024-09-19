@@ -1,5 +1,7 @@
+#include "function.h"
 #include <stdio.h>
 #include <string.h>
+
 
 typedef struct {
     char cpf[12];
@@ -11,16 +13,16 @@ void displayUserInfo(const User *user) {
     printf("Senha: %s\n", user->password);
 }
 
-int main(void){
+int main(){
   User user;
   
-  printf("Econome Cripto\n");
-  printf("=========================\n");
-  printf("Faça seu Login:\n");
+  welcome();
+  diviser();
+  printf("CADASTRO\n");
   printf("CPF: ");
   scanf("%s", user.cpf);
   printf("Senha: ");
-  print("\n")
+  printf("\n");
   scanf("%s", user.password);
   displayUserInfo(&user);
 
