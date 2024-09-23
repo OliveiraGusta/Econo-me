@@ -18,13 +18,9 @@ int main(){
   
   welcome();
   diviser();
-  printf("CADASTRO\n");
-  printf("CPF: ");
-  scanf("%s", user.cpf);
-  printf("Senha: ");
-  printf("\n");
-  scanf("%s", user.password);
-  displayUserInfo(&user);
+  loginOrRegister();
+  scanf("%i", user.cpf);
+
 
   
   return 0;
