@@ -8,6 +8,19 @@ void welcome() {
   printf("O Super App da suas cripto moedas\n");
 }
 
+void menu(){
+  printf("Escolha uma opção:\n");
+  printf("1 - Listar Usuários\n");
+  printf("2 - Consultar Informações e Saldo do Usuário\n");
+  printf("3 - Consultar Extrato\n");
+  printf("4 - Depositar na Carteira(R$)\n");
+  printf("5 - Sacar da Carteira(R$)\n");
+  printf("6 - Comprar Criptomoedas\n");
+  printf("7 - Vender Criptomoedas\n");
+  printf("8 - Atualizar C\n");
+  printf("9 - Sair\n");
+  diviser();
+}
 void diviser() { printf("-----------------------\n"); }
 
 void loginOrRegister() {
@@ -156,29 +169,24 @@ void checkUserInfos(){
     if (file == NULL) {
       return;
     }
-    User user;
-  
+    
     printf("\nSua Carteira\n");
     diviser();
-
-    while (fread(&user, sizeof(User), 1, file) == 1) {
-      printf("CPF: %s\n", user.cpf);
-      printf("Saldo em Reais: %.2f\n", user.balanceReal);
-      printf("Saldo em Bitcoin: %.5f\n", user.balanceBitcoin);
-      printf("Saldo em Ethereum: %.5f\n", user.balanceEthereum);
-      printf("Saldo em Ripple: %.5f\n", user.balanceRipple);
-      diviser();
-    }
+    User user;
+    fread(&user, sizeof(User), 1, file);
+    printf("CPF: %s\n", user.cpf);
+    printf("Saldo:\n");
+    diviser();
+    printf("Reais: %.2f\n", user.balanceReal);
+    printf("Bitcoin: %.5f\n", user.balanceBitcoin);
+    printf("Ethereum: %.5f\n", user.balanceEthereum);
+    printf("Ripple: %.5f\n", user.balanceRipple);
+    diviser();
     
     
-    if (count == 0) {
-      printf("Nenhum usuário cadastrado.\n");
-    }
-
     fclose(file);
   }
-  
-}
+
 FILE *openFile(const char *filename, const char *mode) {
   FILE *file = fopen(filename, mode);
   if (file == NULL) {

@@ -16,6 +16,7 @@ typedef struct {
 // Tools
 void welcome();
 void diviser();
+void menu();
 
 // User Login
 void loginUser();
@@ -24,6 +25,7 @@ void loginOrRegister();
 
 // Files
 void listUsers();
+void checkUserInfos();
 FILE *openFile(const char *filename, const char *mode);
 
 #endif
