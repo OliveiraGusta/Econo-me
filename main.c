@@ -11,6 +11,7 @@ int main() {
   do {
     printf("Escolha uma opção:\n");
     printf("1 - Listar Usuários\n");
+    printf("2 - Consultar Informações e Saldo do Usuário\n");
     printf("9 - Sair\n");
     diviser();
     scanf("%i", &option);

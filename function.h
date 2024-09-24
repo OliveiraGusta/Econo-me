@@ -6,6 +6,11 @@ typedef struct {
   int id;
   char cpf[12];
   char password[6];
+  float balanceReal;
+  float balanceBitcoin;
+  float balanceEthereum;
+  float balanceRipple;
+
 } User;
 
 // Tools

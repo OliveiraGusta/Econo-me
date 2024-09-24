@@ -104,6 +104,12 @@ void registerUser(User *user) {
   printf("Digite a senha: ");
   scanf("%s", user->password);
 
+  user->balanceReal = 0;
+  user->balanceBitcoin = 0;
+  user->balanceEthereum = 0;
+  user->balanceRipple = 0;
+  
+  
   file = openFile("users.dat", "ab");
   if (file == NULL) {
     return;
@@ -130,6 +136,10 @@ void listUsers() {
     printf("ID: %d\n", user.id);
     printf("CPF: %s\n", user.cpf);
     printf("Senha: %s\n", user.password);
+    printf("Saldo em Reais: %.2f\n", user.balanceReal);
+    printf("Saldo em Bitcoin: %.5f\n", user.balanceBitcoin);
+    printf("Saldo em Ethereum: %.5f\n", user.balanceEthereum);
+    printf("Saldo em Ripple: %.5f\n", user.balanceRipple);
     diviser();
   }
 
@@ -140,6 +150,10 @@ void listUsers() {
   fclose(file);
 }
 
+void checkUserInfos(){
+  
+  
+}
 FILE *openFile(const char *filename, const char *mode) {
   FILE *file = fopen(filename, mode);
   if (file == NULL) {
