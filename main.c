@@ -2,6 +2,8 @@
 #include <stdio.h>
 #include <string.h>
 
+
+
 int main() {
   welcome();
   diviser();
@@ -9,19 +11,18 @@ int main() {
   loginOrRegister();
 
   do {
-    printf("Escolha uma opção:\n");
-    printf("1 - Listar Usuários\n");
-    printf("9 - Sair\n");
-    diviser();
+    menu();
     scanf("%i", &option);
-
     switch (option) {
     case 1:
       listUsers();
       break;
-    case 9:
-      printf("Encerrando Sessao...\n");
+    case 2:
+    checkUserInfos();
       break;
+    case 9:
+    printf("Encerrando Sessao...\n");
+    break;
     default:
       diviser();
       printf("Opção invalida. Tente novamente.\n");

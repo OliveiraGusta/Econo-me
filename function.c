@@ -8,6 +8,19 @@ void welcome() {
   printf("O Super App da suas cripto moedas\n");
 }
 
+void menu(){
+  printf("Escolha uma opção:\n");
+  printf("1 - Listar Usuários\n");
+  printf("2 - Consultar Informações e Saldo do Usuário\n");
+  printf("3 - Consultar Extrato\n");
+  printf("4 - Depositar na Carteira(R$)\n");
+  printf("5 - Sacar da Carteira(R$)\n");
+  printf("6 - Comprar Criptomoedas\n");
+  printf("7 - Vender Criptomoedas\n");
+  printf("8 - Atualizar C\n");
+  printf("9 - Sair\n");
+  diviser();
+}
 void diviser() { printf("-----------------------\n"); }
 
 void loginOrRegister() {
@@ -104,6 +117,12 @@ void registerUser(User *user) {
   printf("Digite a senha: ");
   scanf("%s", user->password);
 
+  user->balanceReal = 0;
+  user->balanceBitcoin = 0;
+  user->balanceEthereum = 0;
+  user->balanceRipple = 0;
+  
+  
   file = openFile("users.dat", "ab");
   if (file == NULL) {
     return;
@@ -130,6 +149,10 @@ void listUsers() {
     printf("ID: %d\n", user.id);
     printf("CPF: %s\n", user.cpf);
     printf("Senha: %s\n", user.password);
+    printf("Saldo em Reais: %.2f\n", user.balanceReal);
+    printf("Saldo em Bitcoin: %.5f\n", user.balanceBitcoin);
+    printf("Saldo em Ethereum: %.5f\n", user.balanceEthereum);
+    printf("Saldo em Ripple: %.5f\n", user.balanceRipple);
     diviser();
   }
 
@@ -139,6 +162,30 @@ void listUsers() {
 
   fclose(file);
 }
+
+void checkUserInfos(){
+  
+   FILE *file = openFile("users.dat", "rb");
+    if (file == NULL) {
+      return;
+    }
+    
+    printf("\nSua Carteira\n");
+    diviser();
+    User user;
+    fread(&user, sizeof(User), 1, file);
+    printf("CPF: %s\n", user.cpf);
+    printf("Saldo:\n");
+    diviser();
+    printf("Reais: %.2f\n", user.balanceReal);
+    printf("Bitcoin: %.5f\n", user.balanceBitcoin);
+    printf("Ethereum: %.5f\n", user.balanceEthereum);
+    printf("Ripple: %.5f\n", user.balanceRipple);
+    diviser();
+    
+    
+    fclose(file);
+  }
 
 FILE *openFile(const char *filename, const char *mode) {
   FILE *file = fopen(filename, mode);
