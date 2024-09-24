@@ -12,6 +12,12 @@ int main() {
     printf("Escolha uma opção:\n");
     printf("1 - Listar Usuários\n");
     printf("2 - Consultar Informações e Saldo do Usuário\n");
+    printf("3 - Consultar Extrato\n");
+    printf("4 - Depositar na Carteira(R$)\n");
+    printf("5 - Sacar da Carteira(R$)\n");
+    printf("6 - Comprar Criptomoedas\n");
+    printf("7 - Vender Criptomoedas\n");
+    printf("8 - Atualizar Cotações\n");
     printf("9 - Sair\n");
     diviser();
     scanf("%i", &option);

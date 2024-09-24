@@ -152,6 +152,31 @@ void listUsers() {
 
 void checkUserInfos(){
   
+   FILE *file = openFile("users.dat", "rb");
+    if (file == NULL) {
+      return;
+    }
+    User user;
+  
+    printf("\nSua Carteira\n");
+    diviser();
+
+    while (fread(&user, sizeof(User), 1, file) == 1) {
+      printf("CPF: %s\n", user.cpf);
+      printf("Saldo em Reais: %.2f\n", user.balanceReal);
+      printf("Saldo em Bitcoin: %.5f\n", user.balanceBitcoin);
+      printf("Saldo em Ethereum: %.5f\n", user.balanceEthereum);
+      printf("Saldo em Ripple: %.5f\n", user.balanceRipple);
+      diviser();
+    }
+    
+    
+    if (count == 0) {
+      printf("Nenhum usuário cadastrado.\n");
+    }
+
+    fclose(file);
+  }
   
 }
 FILE *openFile(const char *filename, const char *mode) {
