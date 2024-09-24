@@ -1,8 +1,9 @@
 #ifndef FUNCTION_H
 #define FUNCTION_H
+#include <stdio.h>
 
 typedef struct {
-  int  id; 
+  int id;
   char cpf[12];
   char password[6];
 } User;
@@ -18,5 +19,6 @@ void loginOrRegister();
 
 // Files
 void listUsers();
+FILE *openFile(const char *filename, const char *mode);
 
 #endif

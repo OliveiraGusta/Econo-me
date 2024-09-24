@@ -68,8 +68,26 @@ void loginUser() {
 }
 
 void registerUser(User *user) {
+  FILE *file = openFile("users.dat", "rb");
+  if (file == NULL) {
+    return;
+  }
+  
+  int userCount = 0;
+  User tempUser;
+
+  while (fread(&tempUser, sizeof(User), 1, file) == 1) {
+    userCount++;
+  }
+  fclose(file);
+
+  if (userCount >= 10) {
+    printf("Limite de 10 usuarios atingido\n");
+    loginOrRegister();
+  }
+
   user->id = 1;
-  FILE *file = fopen("users.dat", "rb");
+  file = fopen("users.dat", "rb");
   if (file != NULL) {
     User tempUser;
     while (fread(&tempUser, sizeof(User), 1, file) == 1) {
@@ -86,11 +104,11 @@ void registerUser(User *user) {
   printf("Digite a senha: ");
   scanf("%s", user->password);
 
-  file = fopen("users.dat", "ab");
+  file = openFile("users.dat", "ab");
   if (file == NULL) {
-    printf("Erro no arquivo\n");
     return;
   }
+
   fwrite(user, sizeof(User), 1, file);
   fclose(file);
   printf("Usario Registrado e Logado com Sucesso!\n");
@@ -98,15 +116,13 @@ void registerUser(User *user) {
 }
 
 void listUsers() {
-  FILE *file = fopen("users.dat", "rb");
+  FILE *file = openFile("users.dat", "rb");
   if (file == NULL) {
-    printf("Erro ao abrir o arquivo.\n");
     return;
   }
-
+  
   User user;
   int count = 0;
-
   printf("\nLista de Usuários:\n");
   diviser();
 
@@ -122,4 +138,13 @@ void listUsers() {
   }
 
   fclose(file);
+}
+
+FILE *openFile(const char *filename, const char *mode) {
+  FILE *file = fopen(filename, mode);
+  if (file == NULL) {
+    printf("Erro ao abrir o arquivo %s.\n", filename);
+    return NULL;
+  }
+  return file;
 }
