@@ -11,7 +11,7 @@ int main() {
   do {
     printf("Escolha uma opção:\n");
     printf("1 - Listar Usuários\n");
-    printf("2 - Sair\n");
+    printf("9 - Sair\n");
     diviser();
     scanf("%i", &option);
 
@@ -19,7 +19,7 @@ int main() {
     case 1:
       listUsers();
       break;
-    case 2:
+    case 9:
       printf("Encerrando Sessao...\n");
       break;
     default:
@@ -28,7 +28,7 @@ int main() {
       diviser();
       break;
     }
-  } while (option != 2);
+  } while (option != 9);
 
   return 0;
 }
