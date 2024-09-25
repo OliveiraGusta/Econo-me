@@ -20,13 +20,14 @@ void menu(int userId);
 void loginOrRegister(User *user);
 void listUsers();     
       
-
 // User
 void loginUser(User *user);            
-void registerUser(User *user);         
-void deposit(int userId);              
-void checkUserInfos();    
+void registerUser(User *user);
 
+// Cryptos
+void deposit(int userId);              
+void checkUserInfos();  
+void buyCrypto(int userId);   
 
 // Files
 FILE *openFile(const char *filename, const char *mode); 

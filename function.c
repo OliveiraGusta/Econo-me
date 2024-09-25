@@ -191,55 +191,111 @@ void checkUserInfos(){
 }
 
 void deposit(int userId) {
-    FILE *file = fopen("users.dat", "r+b");  // Usando fopen
-    if (file == NULL) {
-        printf("Erro ao verificar seu saldo\n");
-        return;
-    }
+  User user;
+  int found = 0;
+  FILE *file = fopen("users.dat", "r+b");  // Usando fopen
+  if (file == NULL) {
+      printf("Erro ao verificar seu saldo\n");
+      return;
+  }
 
-    User user;
-    int found = 0;
-    
-    while (fread(&user, sizeof(User), 1, file) == 1) {
-        if (user.id == userId) { 
-            found = 1;
-            break;
-        }
-    }
+  while (fread(&user, sizeof(User), 1, file) == 1) {
+      if (user.id == userId) { 
+          found = 1;
+          break;
+      }
+  }
+  if (!found) {
+      printf("Usuário não encontrado.\n");
+      fclose(file);
+      return;
+  }
+  diviser();
+  printf("Saldo Atual: R$%.2f\n", user.balanceReal);
+  
+  int choice = 0;
+  printf("\nQual valor do depósito?\n");
+  diviser();
+  printf("R$ ");
+  scanf("%i", &choice);
+  diviser();
+  
+  if (choice <= 0) {
+      printf("Seu depósito não pode ser negativo ou zero.\n");
+      fclose(file);
+      deposit(userId); 
+  } else {
+      user.balanceReal += choice;
 
-    if (!found) {
-        printf("Usuário não encontrado.\n");
-        fclose(file);
-        return;
-    }
+      fseek(file, -sizeof(User), SEEK_CUR);
+      fwrite(&user, sizeof(User), 1, file);
 
-    diviser();
-    printf("Saldo Atual: %.2f\n", user.balanceReal);
-    
-    int choice = 0;
-    printf("\nQual valor do depósito?\n");
-    diviser();
-    printf("R$ ");
-    scanf("%i", &choice);
-    diviser();
-    
-    if (choice <= 0) {
-        printf("Seu depósito não pode ser negativo ou zero.\n");
-        fclose(file);
-        deposit(userId); 
-    } else {
-        user.balanceReal += choice;
-
-        fseek(file, -sizeof(User), SEEK_CUR);
-        fwrite(&user, sizeof(User), 1, file);
-
-        printf("Saldo Atualizado: %.2f\n", user.balanceReal);
-        diviser();
-        
-        fclose(file);
-    }
+      printf("Saldo Atualizado: %.2f\n", user.balanceReal);
+      diviser();
+      
+      fclose(file);
+  }
 }
 
+void buyCrypto(int userId){
+  User user;
+  int found = 0, option = 0;
+  FILE *file = fopen("users.dat", "r+b");
+  if (file == NULL) {
+      printf("Erro ao verificar seu saldo\n");
+      return;
+  }
+
+  while (fread(&user, sizeof(User), 1, file) == 1) {
+      if (user.id == userId) { 
+          found = 1;
+          break;
+      }
+  }
+    if (!found) {
+      printf("Usuário não encontrado.\n");
+      fclose(file);
+      return;
+  }
+  printf("\nComprar Criptosmoedas");
+  diviser();
+  printf("Saldo Atual");
+  printf("R$ %.5f\n (Reais)", user.balanceBitcoin);
+  printf("Saldo Atual de Criptos");
+  diviser();
+  printf("BTC %.5f\n (Bitcoin)", user.balanceBitcoin);
+  printf("ETC %.5f\n (Ethereum)", user.balanceEthereum);
+  printf("XRP %.5f\n (Ripple)", user.balanceRipple);
+  diviser();
+  printf("\nFaça sua compra\n");
+  printf("1 - Bitcoin (BTC)\n");
+  printf("2 - Ethereum (ETC)\n");
+  printf("3 - Ripple (XRP)\n");
+  printf("Digite sua escolha: ");
+  scanf("%i", &option);
+  switch (option) {
+      case 1:
+        printf("Bitcoin (BTC)\n");
+        diviser();
+        
+      break;
+      case 2:
+        printf("Ethereum (ETC)\n");
+        diviser();
+
+      break;
+      case 3:
+        printf("Ripple (XRP)\n");
+        diviser();
+      break;
+      default:
+        diviser();
+        printf("\nOpcao invalida\n");
+        diviser();
+      break;
+
+
+}
 
 FILE *openFile(const char *filename, const char *mode) {
   FILE *file = fopen(filename, mode);
