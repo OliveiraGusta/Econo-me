@@ -41,7 +41,7 @@ int main() {
                 diviser();
                 break;
             case 8:
-                printf("\nAtualizar C\n");
+                printf("\nAtualizar Cotação da Cripto\n");
                 printf("\nEm Breve...\n");
                 diviser(); 
                 break;

@@ -230,7 +230,7 @@ void deposit(int userId) {
       fseek(file, -sizeof(User), SEEK_CUR);
       fwrite(&user, sizeof(User), 1, file);
 
-      printf("Saldo Atualizado: %.2f\n", user.balanceReal);
+      printf("Saldo Atualizado: R$ %.2f\n", user.balanceReal);
       diviser();
       
       fclose(file);
@@ -240,6 +240,7 @@ void deposit(int userId) {
 void buyCrypto(int userId){
   User user;
   int found = 0, optionCripto = 0;
+
   FILE *file = fopen("users.dat", "r+b");
   if (file == NULL) {
       printf("Erro ao verificar seu saldo\n");
@@ -259,25 +260,27 @@ void buyCrypto(int userId){
   }
   printf("\nComprar Criptosmoedas\n");
   diviser();
+
   printf("Saldo Atual\n");
   printf("R$ %.2f (Reais)\n", user.balanceReal);
-  printf("Saldo Atual de Criptos\n");
+  printf("\nSaldo Atual de Criptos\n");
   diviser();
   printf("BTC %.5f (Bitcoin)\n", user.balanceBitcoin);
   printf("ETC %.5f (Ethereum)\n", user.balanceEthereum);
   printf("XRP %.5f (Ripple)\n", user.balanceRipple);
   diviser();
+
   printf("\nFaça sua compra\n");
   printf("1 - Bitcoin (BTC)\n");
   printf("2 - Ethereum (ETC)\n");
   printf("3 - Ripple (XRP)\n");
+
   printf("Digite sua escolha: ");
   scanf("%i", &optionCripto);
   switch (optionCripto) {
       case 1:
         printf("Bitcoin (BTC)\n");
         diviser();
-
       break;
       case 2:
         printf("Ethereum (ETC)\n");
@@ -297,6 +300,9 @@ void buyCrypto(int userId){
 
   }
 }
+
+
+
 
 FILE *openFile(const char *filename, const char *mode) {
   FILE *file = fopen(filename, mode);
