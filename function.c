@@ -7,8 +7,7 @@ void welcome() {
   diviser();
   printf("O Super App da suas cripto moedas\n");
 }
-
-void menu(){
+void menu(int userId){
   printf("\nEscolha uma opção:\n");
   diviser();
   printf("1 - Listar Usuários\n");
@@ -24,32 +23,32 @@ void menu(){
 }
 void diviser() { printf("-----------------------\n"); }
 
-void loginOrRegister() {
-  User user;
-  int choice = 0;
+void loginOrRegister(User *user) {
+  int option = 0;
   printf("Faça seu Login ou Cadastro:\n");
   printf("1 - Cadastro\n");
   printf("2 - Login\n");
   diviser();
   printf("Digite sua escolha: ");
-  scanf("%i", &choice);
-  if (choice == 1)
-    registerUser(&user);
-  else if (choice == 2)
-    loginUser();
+  scanf("%i", &option);
+  if (option == 1)
+    registerUser(user);
+  else if (option == 2)
+    loginUser(user);
   else {
     diviser();
     printf("\nOpcao invalida\n");
     diviser();
-    loginOrRegister();
+    loginOrRegister(user);
   }
 }
 
-void loginUser() {
-  User user;
+void loginUser(User *user) {
   char cpf[11];
   char password[5];
-  
+  int isUser = 0;
+  User tempUser;
+
   printf("\nFaca seu Login\n");
   diviser();
   printf("Digite o CPF (apenas números): ");
@@ -59,14 +58,14 @@ void loginUser() {
   scanf("%s", password);
 
   FILE *file = fopen("users.dat", "rb");
-  if (file == NULL) {
+  if (!file) {
     printf("Erro ao abrir o arquivo.\n");
     return;
   }
 
-  int isUser = 0;
   while (fread(&user, sizeof(User), 1, file) == 1) {
-    if (strcmp(user.cpf, cpf) == 0 && strcmp(user.password, password) == 0) {
+    if (strcmp(tempUser.cpf, cpf) == 0 && strcmp(tempUser.password, password) == 0) {
+      *user = tempUser; 
       isUser = 1;
       break;
     }
@@ -82,13 +81,13 @@ void loginUser() {
     diviser();
     printf("Usuario não encontrado.\nCPF ou Senha Incorretos.\n");
     diviser();
-    loginOrRegister();
+    loginOrRegister(user);
   }
 }
 
 void registerUser(User *user) {
   FILE *file = openFile("users.dat", "rb");
-  if (file == NULL) {
+  if (!file) {
     return;
   }
   
@@ -104,16 +103,16 @@ void registerUser(User *user) {
     diviser();
     printf("\nLimite de 10 usuarios atingido\n");
     diviser();
-    loginOrRegister();
+    loginOrRegister(user);
   }
 
   user->id = 1;
   file = fopen("users.dat", "rb");
   if (file != NULL) {
-    User tempUser;
+    User tempUser;  
     while (fread(&tempUser, sizeof(User), 1, file) == 1) {
       if (tempUser.id >= user->id) {
-        user->id = tempUser.id + 1;
+        user->id = tempUser.id + 1; 
       }
     }
     fclose(file);
@@ -134,7 +133,7 @@ void registerUser(User *user) {
   
   
   file = openFile("users.dat", "ab");
-  if (file == NULL) {
+  if (!file) {
     return;
   }
 
@@ -146,7 +145,7 @@ void registerUser(User *user) {
 
 void listUsers() {
   FILE *file = openFile("users.dat", "rb");
-  if (file == NULL) {
+  if (!file) {
     return;
   }
   
@@ -169,9 +168,8 @@ void listUsers() {
 }
 
 void checkUserInfos(){
-  
    FILE *file = openFile("users.dat", "rb");
-    if (file == NULL) {
+    if (!file) {
       return;
     }
     
@@ -190,13 +188,66 @@ void checkUserInfos(){
     
     
     fclose(file);
-  }
+}
+
+void deposit(int userId) {
+    FILE *file = fopen("users.dat", "r+b");  // Usando fopen
+    if (file == NULL) {
+        printf("Erro ao verificar seu saldo\n");
+        return;
+    }
+
+    User user;
+    int found = 0;
+    
+    while (fread(&user, sizeof(User), 1, file) == 1) {
+        if (user.id == userId) { 
+            found = 1;
+            break;
+        }
+    }
+
+    if (!found) {
+        printf("Usuário não encontrado.\n");
+        fclose(file);
+        return;
+    }
+
+    diviser();
+    printf("Saldo Atual: %.2f\n", user.balanceReal);
+    
+    int choice = 0;
+    printf("\nQual valor do depósito?\n");
+    diviser();
+    printf("R$ ");
+    scanf("%i", &choice);
+    diviser();
+    
+    if (choice <= 0) {
+        printf("Seu depósito não pode ser negativo ou zero.\n");
+        fclose(file);
+        deposit(userId); 
+    } else {
+        user.balanceReal += choice;
+
+        fseek(file, -sizeof(User), SEEK_CUR);
+        fwrite(&user, sizeof(User), 1, file);
+
+        printf("Saldo Atualizado: %.2f\n", user.balanceReal);
+        diviser();
+        
+        fclose(file);
+    }
+}
+
 
 FILE *openFile(const char *filename, const char *mode) {
   FILE *file = fopen(filename, mode);
-  if (file == NULL) {
+  if (!file) {
     printf("Erro ao abrir o arquivo %s.\n", filename);
     return NULL;
   }
   return file;
 }
+
+
