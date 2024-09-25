@@ -277,7 +277,7 @@ void buyCrypto(int userId){
       case 1:
         printf("Bitcoin (BTC)\n");
         diviser();
-        
+
       break;
       case 2:
         printf("Ethereum (ETC)\n");
@@ -294,7 +294,7 @@ void buyCrypto(int userId){
         diviser();
       break;
 
-
+  }
 }
 
 FILE *openFile(const char *filename, const char *mode) {
