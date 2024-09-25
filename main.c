@@ -20,6 +20,9 @@ int main() {
     case 2:
     checkUserInfos();
       break;
+    case 4:
+    deposit();
+      break;
     case 9:
     printf("Encerrando Sessao...\n");
     break;

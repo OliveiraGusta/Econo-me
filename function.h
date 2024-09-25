@@ -26,6 +26,7 @@ void loginOrRegister();
 // Files
 void listUsers();
 void checkUserInfos();
+void deposit();
 FILE *openFile(const char *filename, const char *mode);
 
 #endif

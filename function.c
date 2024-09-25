@@ -192,6 +192,46 @@ void checkUserInfos(){
     fclose(file);
   }
 
+void deposit(){
+    //ABRINDO ARQUIVO  
+    FILE *file = openFile("users.dat", "r+b");
+    if (file == NULL) {
+      printf("Erro ao verificar seu saldo\n");
+      return;
+    }
+    User user;
+    fread(&user, sizeof(User), 1, file);
+    diviser();
+    //MOSTRANDO SALDO ATUAL
+    printf("Saldo Atual: %.2f\n", user.balanceReal);
+    
+    //PERGUNTANDO NOVO SALDO
+    int choice = 0;
+    printf("\nQual valor do depósito?\n");
+    diviser();
+    printf("R$ ");
+    scanf("%i", &choice);
+    diviser();
+    
+    if (choice <=0){
+      printf("Seu depósito não pode ser negativo ou zero.\n");
+      fclose(file);
+      deposit();
+    }
+    else{
+      //CALCULANDO NOVO SALDO
+      user.balanceReal += choice;
+      //ESCREVENDO NOVO SALDO NO ARQUIVO BINÁRIO
+      fseek(file, 0, SEEK_SET);
+      fwrite(&user, sizeof(User), 1, file);
+    
+      printf("Saldo Atualizado: %.2f\n", user.balanceReal);
+      
+      diviser();
+      
+      fclose(file);
+    }
+}
 FILE *openFile(const char *filename, const char *mode) {
   FILE *file = fopen(filename, mode);
   if (file == NULL) {
