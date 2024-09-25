@@ -239,7 +239,7 @@ void deposit(int userId) {
 
 void buyCrypto(int userId){
   User user;
-  int found = 0, option = 0;
+  int found = 0, optionCripto = 0;
   FILE *file = fopen("users.dat", "r+b");
   if (file == NULL) {
       printf("Erro ao verificar seu saldo\n");
@@ -257,23 +257,23 @@ void buyCrypto(int userId){
       fclose(file);
       return;
   }
-  printf("\nComprar Criptosmoedas");
+  printf("\nComprar Criptosmoedas\n");
   diviser();
-  printf("Saldo Atual");
-  printf("R$ %.5f\n (Reais)", user.balanceBitcoin);
-  printf("Saldo Atual de Criptos");
+  printf("Saldo Atual\n");
+  printf("R$ %.2f (Reais)\n", user.balanceReal);
+  printf("Saldo Atual de Criptos\n");
   diviser();
-  printf("BTC %.5f\n (Bitcoin)", user.balanceBitcoin);
-  printf("ETC %.5f\n (Ethereum)", user.balanceEthereum);
-  printf("XRP %.5f\n (Ripple)", user.balanceRipple);
+  printf("BTC %.5f (Bitcoin)\n", user.balanceBitcoin);
+  printf("ETC %.5f (Ethereum)\n", user.balanceEthereum);
+  printf("XRP %.5f (Ripple)\n", user.balanceRipple);
   diviser();
   printf("\nFaça sua compra\n");
   printf("1 - Bitcoin (BTC)\n");
   printf("2 - Ethereum (ETC)\n");
   printf("3 - Ripple (XRP)\n");
   printf("Digite sua escolha: ");
-  scanf("%i", &option);
-  switch (option) {
+  scanf("%i", &optionCripto);
+  switch (optionCripto) {
       case 1:
         printf("Bitcoin (BTC)\n");
         diviser();
@@ -292,6 +292,7 @@ void buyCrypto(int userId){
         diviser();
         printf("\nOpcao invalida\n");
         diviser();
+        buyCrypto(user.id); 
       break;
 
   }

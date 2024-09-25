@@ -34,14 +34,17 @@ int main() {
                 break;
             case 6:
                 buyCrypto(user.id); 
+                break;
             case 7:
                 printf("\nVender Criptomoedas\n");
                 printf("\nEm Breve...\n");
                 diviser();
+                break;
             case 8:
                 printf("\nAtualizar C\n");
                 printf("\nEm Breve...\n");
                 diviser(); 
+                break;
             case 9:
                 printf("Encerrando Sessão...\n");
                 break;
