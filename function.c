@@ -9,7 +9,8 @@ void welcome() {
 }
 
 void menu(){
-  printf("Escolha uma opção:\n");
+  printf("\nEscolha uma opção:\n");
+  diviser();
   printf("1 - Listar Usuários\n");
   printf("2 - Consultar Informações e Saldo do Usuário\n");
   printf("3 - Consultar Extrato\n");
@@ -30,6 +31,7 @@ void loginOrRegister() {
   printf("1 - Cadastro\n");
   printf("2 - Login\n");
   diviser();
+  printf("Digite sua escolha: ");
   scanf("%i", &choice);
   if (choice == 1)
     registerUser(&user);
@@ -37,7 +39,7 @@ void loginOrRegister() {
     loginUser();
   else {
     diviser();
-    printf("Opcao invalida\n");
+    printf("\nOpcao invalida\n");
     diviser();
     loginOrRegister();
   }
@@ -47,7 +49,9 @@ void loginUser() {
   User user;
   char cpf[11];
   char password[5];
-
+  
+  printf("\nFaca seu Login\n");
+  diviser();
   printf("Digite o CPF (apenas números): ");
   scanf("%s", cpf);
 
@@ -70,10 +74,12 @@ void loginUser() {
 
   fclose(file);
   if (isUser) {
+    diviser();
     printf("Seja Bem Vindo!\n");
     diviser();
 
   } else {
+    diviser();
     printf("Usuario não encontrado.\nCPF ou Senha Incorretos.\n");
     diviser();
     loginOrRegister();
@@ -95,7 +101,9 @@ void registerUser(User *user) {
   fclose(file);
 
   if (userCount >= 10) {
-    printf("Limite de 10 usuarios atingido\n");
+    diviser();
+    printf("\nLimite de 10 usuarios atingido\n");
+    diviser();
     loginOrRegister();
   }
 
@@ -110,7 +118,9 @@ void registerUser(User *user) {
     }
     fclose(file);
   }
-
+  
+  printf("\nFaca seu Cadastro\n");
+  diviser();
   printf("Digite o CPF (apenas números): ");
   scanf("%s", user->cpf);
 
@@ -130,7 +140,7 @@ void registerUser(User *user) {
 
   fwrite(user, sizeof(User), 1, file);
   fclose(file);
-  printf("Usario Registrado e Logado com Sucesso!\n");
+  printf("\nUsario Registrado e Logado com Sucesso!\n");
   diviser();
 }
 
@@ -141,7 +151,6 @@ void listUsers() {
   }
   
   User user;
-  int count = 0;
   printf("\nLista de Usuários:\n");
   diviser();
 
@@ -154,10 +163,6 @@ void listUsers() {
     printf("Saldo em Ethereum: %.5f\n", user.balanceEthereum);
     printf("Saldo em Ripple: %.5f\n", user.balanceRipple);
     diviser();
-  }
-
-  if (count == 0) {
-    printf("Nenhum usuário cadastrado.\n");
   }
 
   fclose(file);
@@ -175,7 +180,7 @@ void checkUserInfos(){
     User user;
     fread(&user, sizeof(User), 1, file);
     printf("CPF: %s\n", user.cpf);
-    printf("Saldo:\n");
+    printf("\nSaldo\n");
     diviser();
     printf("Reais: %.2f\n", user.balanceReal);
     printf("Bitcoin: %.5f\n", user.balanceBitcoin);
