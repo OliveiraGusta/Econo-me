@@ -7,17 +7,19 @@ int main() {
     welcome();
     diviser();
     loginOrRegister(&user);
+    updateCryptoPrices();
 
     int option;
     do {
         menu(user.id);  
         scanf("%i", &option);
+        
         switch (option) {
             case 1:
                 listUsers();
                 break;
             case 2:
-                checkUserInfos();
+                checkUserInfos(user.id);
                 break;
             case 3:
                 printf("\nConsultar Extrato\n");
