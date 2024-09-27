@@ -40,11 +40,13 @@ void listUsers();
 void loginUser(User *user);            
 void registerUser(User *user);
 void checkUserInfos(int userId);              
-void deposit(int userId);              
+void deposit(int userId);     
+void withdraw(int userId);         
 
 // Cryptos
 void updateCryptoPrices();
-void buyCrypto(int userId);   
+void buyCrypto(int userId);
+void sellCrypto(int userId);     
 
 // Files
 FILE *openFile(const char *filename, const char *mode); 
