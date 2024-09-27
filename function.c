@@ -280,6 +280,7 @@ void buyCrypto(int userId){
   User user;
   int found = 0, optionCripto = 0, confirmBuy = 0;
   float amount = 0;
+  float fee = 0;
 
   FILE *file = fopen("users.dat", "r+b");
   if (file == NULL) {
@@ -322,11 +323,30 @@ void buyCrypto(int userId){
 
   printf("Digite o valor que deseja investir em R$ ");
   scanf("%f", &amount);
+  switch (optionCripto) {
+      case 1:
+        fee = amount * BITCOIN_BUY_FEE;
+      break;
+      case 2:
+        fee = amount * ETHEREUM_BUY_FEE;
+      break;
+      case 3:
+        fee = amount * RIPPLE_BUY_FEE;
+      break;
+      default:
+        diviser();
+        printf("\nOpcao invalida\n");
+        diviser();
+        buyCrypto(user.id); 
+      break;
+  }
+  float totalCost = amount + fee;
 
 
 
-  if (amount > user.balanceReal) {
-      printf("\nSaldo insuficiente para realizar a compra.\n");
+
+  if (totalCost > user.balanceReal) {
+      printf("\nSaldo insuficiente para realizar a compra somado a taxa.\n");
       fclose(file);
       return;
   }
@@ -334,15 +354,15 @@ void buyCrypto(int userId){
 
   switch (optionCripto) {
       case 1:
-        printf("Bitcoin (BTC)?\n");
+        printf("Bitcoin (BTC) + taxa R$%2.f?\n", + fee);
         diviser();
       break;
       case 2:
-        printf("Ethereum (ETC)?\n");
+        printf("Ethereum (ETC)+ taxa R$%2.f?\n", + fee);
         diviser();
       break;
       case 3:
-        printf("Ripple (XRP)?\n");
+        printf("Ripple (XRP)+ taxa R$%2.f?\n", + fee);
         diviser();
       break;
       default:
@@ -364,25 +384,22 @@ void buyCrypto(int userId){
     switch (optionCripto) {
         case 1:
           diviser();
-          amount -= amount * BITCOIN_BUY_FEE;
-          user.balanceReal -= amount;
+          user.balanceReal -= totalCost;
           user.balanceBitcoin += amount / bitcoinPrice;
           printf("Compra realizada!\nSaldo BTC: %.5f\n", user.balanceBitcoin);
           diviser();
         break;
         case 2:
           diviser();
-          amount -= amount * ETHEREUM_BUY_FEE;
-          user.balanceReal -= amount;
-          user.balanceEthereum += amount / bitcoinPrice;
+          user.balanceReal -= totalCost;
+          user.balanceEthereum += amount / ethereumPrice;
           printf("Compra realizada!\nSaldo ETC: %.5f\n", user.balanceEthereum);
           diviser();
         break;
         case 3:
           diviser();
-          amount -= amount * RIPPLE_BUY_FEE;
-          user.balanceReal -= amount;
-          user.balanceRipple += amount / bitcoinPrice;
+          user.balanceReal -= totalCost;
+          user.balanceRipple += amount / ripplePrice;
           printf("Compra realizada!\nSaldo XRP: %.5f\n", user.balanceRipple);
           diviser();
         break;
