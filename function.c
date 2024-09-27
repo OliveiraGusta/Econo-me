@@ -22,7 +22,7 @@ void menu(int userId){
   printf("5 - Sacar da Carteira(R$)\n");
   printf("6 - Comprar Criptomoedas\n");
   printf("7 - Vender Criptomoedas\n");
-  printf("8 - Atualizar C\n");
+  printf("8 - Ver Cotacao Atual\n");
   printf("9 - Sair\n");
   diviser();
 }
@@ -227,7 +227,9 @@ void updateCryptoPrices() {
 
 void deposit(int userId) {
   User user;
-  int found = 0, amount = 0;
+  int found = 0;
+  float amount = 0;
+  
   FILE *file = fopen("users.dat", "r+b"); 
   if (file == NULL) {
       printf("Erro ao verificar seu saldo\n");
@@ -252,7 +254,7 @@ void deposit(int userId) {
   printf("\nQual valor do deposito?\n");
   diviser();
   printf("R$ ");
-  scanf("%i", &amount);
+  scanf("%f", &amount);
   diviser();
   
   if (amount <= 0) {
@@ -319,14 +321,16 @@ void buyCrypto(int userId){
   scanf("%i", &optionCripto);
 
   printf("Digite o valor que deseja investir em R$ ");
-  scanf("%.2f", &amount);
+  scanf("%f", &amount);
+
+
 
   if (amount > user.balanceReal) {
       printf("\nSaldo insuficiente para realizar a compra.\n");
       fclose(file);
       return;
   }
-  printf("Voce deseja comprar R$ %.2f em ", amount);
+  printf("\nVoce deseja comprar R$ %.2f em ", amount);
 
   switch (optionCripto) {
       case 1:
@@ -350,14 +354,15 @@ void buyCrypto(int userId){
   }
 
   printf("\nConfirmacao\n");
+  diviser();
   printf("1 - Sim\n");
   printf("2 - Nao\n");
+  diviser();
   scanf("%i", &confirmBuy); 
 
   if (confirmBuy == 1) {
     switch (optionCripto) {
         case 1:
-        
           diviser();
           amount -= amount * BITCOIN_BUY_FEE;
           user.balanceReal -= amount;
@@ -366,7 +371,6 @@ void buyCrypto(int userId){
           diviser();
         break;
         case 2:
-          printf("\nComprando Ethereum (ETC)\n");
           diviser();
           amount -= amount * ETHEREUM_BUY_FEE;
           user.balanceReal -= amount;
@@ -375,7 +379,7 @@ void buyCrypto(int userId){
           diviser();
         break;
         case 3:
-          printf("\nComprando Ripple (XRP)\n");
+          diviser();
           amount -= amount * RIPPLE_BUY_FEE;
           user.balanceReal -= amount;
           user.balanceRipple += amount / bitcoinPrice;
@@ -390,8 +394,14 @@ void buyCrypto(int userId){
         break;
     }
 
+    //REESCREVER O ARQUIVO
+    fseek(file, -sizeof(User), SEEK_CUR);
+    fwrite(&user, sizeof(User), 1, file);
+    //FECHAR O ARQUIVO PARA SALVAR OS DADOS
+    fclose(file);
+
   }else{
-    
+    printf("\nCompra Cancelada!\n");
     return;
   }
 }

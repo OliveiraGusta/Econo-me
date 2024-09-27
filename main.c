@@ -43,12 +43,10 @@ int main() {
                 diviser();
                 break;
             case 8:
-                printf("\nAtualizar Cotação da Cripto\n");
-                printf("\nEm Breve...\n");
-                diviser(); 
+                updateCryptoPrices();
                 break;
             case 9:
-                printf("Encerrando Sessão...\n");
+                printf("Encerrando Sessao...\n");
                 break;
             default:
                 diviser();
