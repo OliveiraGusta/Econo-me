@@ -30,17 +30,14 @@ int main() {
                 deposit(user.id);
                 break;
             case 5:
-                printf("\nSacar da Carteira(R$)\n");
-                printf("\nEm Breve...\n");
-                diviser();
+                withdraw(user.id);
                 break;
             case 6:
                 buyCrypto(user.id); 
                 break;
             case 7:
-                printf("\nVender Criptomoedas\n");
-                printf("\nEm Breve...\n");
-                diviser();
+                sellCrypto(user.id); 
+
                 break;
             case 8:
                 updateCryptoPrices();
@@ -50,7 +47,7 @@ int main() {
                 break;
             default:
                 diviser();
-                printf("Opção inválida. Tente novamente.\n");
+                printf("Opcao inválida. Tente novamente.\n");
                 diviser();
                 break;
         }
