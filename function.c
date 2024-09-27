@@ -251,18 +251,72 @@ void deposit(int userId) {
   printf("Saldo Atual: R$%.2f\n", user.balanceReal);
   
   
-  printf("\nQual valor do deposito?\n");
+  printf("\nQual valor do deposito ou digite 0 para cancelar?\n");
   diviser();
   printf("R$ ");
   scanf("%f", &amount);
   diviser();
   
-  if (amount <= 0) {
+  if (amount == 0){
+    return;
+  }
+  if (amount < 0) {
       printf("Seu deposito nao pode ser negativo ou zero.\n");
       fclose(file);
       deposit(userId); 
   } else {
       user.balanceReal += amount;
+
+      fseek(file, -sizeof(User), SEEK_CUR);
+      fwrite(&user, sizeof(User), 1, file);
+
+      printf("Saldo Atualizado: R$ %.2f\n", user.balanceReal);
+      diviser();
+      
+      fclose(file);
+  }
+}
+
+void withdraw(int userId){
+  User user;
+  int found = 0;
+  float amount = 0;
+  
+  FILE *file = fopen("users.dat", "r+b"); 
+  if (file == NULL) {
+      printf("Erro ao verificar seu saldo\n");
+      return;
+  }
+
+  while (fread(&user, sizeof(User), 1, file) == 1) {
+      if (user.id == userId) { 
+          found = 1;
+          break;
+      }
+  }
+  if (!found) {
+      printf("Usuario nao encontrado.\n");
+      fclose(file);
+      return;
+  }
+  diviser();
+  printf("Saldo Atual: R$%.2f\n", user.balanceReal);
+
+  printf("\nQual valor de saque ou digite 0 para cancelar?\n");
+  diviser();
+  printf("R$ ");
+  scanf("%f", &amount);
+  diviser();
+
+  if (amount == 0){
+    return;
+  }
+  if (amount > user.balanceReal) {
+      printf("Saque maior que o saldo.\n");
+      fclose(file);
+      deposit(userId); 
+  } else {
+      user.balanceReal -= amount;
 
       fseek(file, -sizeof(User), SEEK_CUR);
       fwrite(&user, sizeof(User), 1, file);
