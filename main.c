@@ -7,23 +7,46 @@ int main() {
     welcome();
     diviser();
     loginOrRegister(&user);
+    updateCryptoPrices();
 
     int option;
     do {
         menu(user.id);  
         scanf("%i", &option);
+        
         switch (option) {
             case 1:
                 listUsers();
                 break;
             case 2:
-                checkUserInfos();
+                checkUserInfos(user.id);
                 break;
             case 3:
-                deposit(user.id); 
+                printf("\nConsultar Extrato\n");
+                printf("\nEm Breve...\n");
+                diviser();
+                break;
+            case 4:
+                deposit(user.id);
+                break;
+            case 5:
+                printf("\nSacar da Carteira(R$)\n");
+                printf("\nEm Breve...\n");
+                diviser();
+                break;
+            case 6:
+                buyCrypto(user.id); 
+                break;
+            case 7:
+                printf("\nVender Criptomoedas\n");
+                printf("\nEm Breve...\n");
+                diviser();
+                break;
+            case 8:
+                updateCryptoPrices();
                 break;
             case 9:
-                printf("Encerrando Sessão...\n");
+                printf("Encerrando Sessao...\n");
                 break;
             default:
                 diviser();

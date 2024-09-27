@@ -1,6 +1,11 @@
 #include "function.h"
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
+#include <time.h>
+
+float bitcoinPrice = 0, ethereumPrice = 0, ripplePrice = 0;;
+
 
 void welcome() {
   printf("ECONO-ME CRIPTO\n");
@@ -8,16 +13,16 @@ void welcome() {
   printf("O Super App da suas cripto moedas\n");
 }
 void menu(int userId){
-  printf("\nEscolha uma opção:\n");
+  printf("\nEscolha uma opcao:\n");
   diviser();
-  printf("1 - Listar Usuários\n");
-  printf("2 - Consultar Informações e Saldo do Usuário\n");
+  printf("1 - Listar Usuarios\n");
+  printf("2 - Consultar Informacoes e Saldo do Usuario\n");
   printf("3 - Consultar Extrato\n");
   printf("4 - Depositar na Carteira(R$)\n");
   printf("5 - Sacar da Carteira(R$)\n");
   printf("6 - Comprar Criptomoedas\n");
   printf("7 - Vender Criptomoedas\n");
-  printf("8 - Atualizar C\n");
+  printf("8 - Ver Cotacao Atual\n");
   printf("9 - Sair\n");
   diviser();
 }
@@ -25,7 +30,7 @@ void diviser() { printf("-----------------------\n"); }
 
 void loginOrRegister(User *user) {
   int option = 0;
-  printf("Faça seu Login ou Cadastro:\n");
+  printf("Faca seu Login ou Cadastro:\n");
   printf("1 - Cadastro\n");
   printf("2 - Login\n");
   diviser();
@@ -51,7 +56,7 @@ void loginUser(User *user) {
 
   printf("\nFaca seu Login\n");
   diviser();
-  printf("Digite o CPF (apenas números): ");
+  printf("Digite o CPF (apenas numeros): ");
   scanf("%s", cpf);
 
   printf("Digite a senha: ");
@@ -79,7 +84,7 @@ void loginUser(User *user) {
 
   } else {
     diviser();
-    printf("Usuario não encontrado.\nCPF ou Senha Incorretos.\n");
+    printf("Usuario nao encontrado.\nCPF ou Senha Incorretos.\n");
     diviser();
     loginOrRegister(user);
   }
@@ -120,7 +125,7 @@ void registerUser(User *user) {
   
   printf("\nFaca seu Cadastro\n");
   diviser();
-  printf("Digite o CPF (apenas números): ");
+  printf("Digite o CPF (apenas numeros): ");
   scanf("%s", user->cpf);
 
   printf("Digite a senha: ");
@@ -150,7 +155,7 @@ void listUsers() {
   }
   
   User user;
-  printf("\nLista de Usuários:\n");
+  printf("\nLista de Usuarios:\n");
   diviser();
 
   while (fread(&user, sizeof(User), 1, file) == 1) {
@@ -167,15 +172,29 @@ void listUsers() {
   fclose(file);
 }
 
-void checkUserInfos(){
-   FILE *file = openFile("users.dat", "rb");
-    if (!file) {
+void checkUserInfos(int userId){
+  User user;
+  int found = 0;
+  FILE *file = fopen("users.dat", "r+b"); 
+  if (file == NULL) {
+      printf("Erro ao verificar seu saldo\n");
       return;
-    }
+  }
+
+  while (fread(&user, sizeof(User), 1, file) == 1) {
+      if (user.id == userId) { 
+          found = 1;
+          break;
+      }
+  }
+  if (!found) {
+      printf("Usuario nao encontrado.\n");
+      fclose(file);
+      return;
+  }
     
     printf("\nSua Carteira\n");
     diviser();
-    User user;
     fread(&user, sizeof(User), 1, file);
     printf("CPF: %s\n", user.cpf);
     printf("\nSaldo\n");
@@ -190,55 +209,203 @@ void checkUserInfos(){
     fclose(file);
 }
 
-void deposit(int userId) {
-    FILE *file = fopen("users.dat", "r+b");  // Usando fopen
-    if (file == NULL) {
-        printf("Erro ao verificar seu saldo\n");
-        return;
-    }
 
-    User user;
-    int found = 0;
-    
-    while (fread(&user, sizeof(User), 1, file) == 1) {
-        if (user.id == userId) { 
-            found = 1;
-            break;
-        }
-    }
+void updateCryptoPrices() {
+    srand(time(0));
 
-    if (!found) {
-        printf("Usuário não encontrado.\n");
-        fclose(file);
-        return;
-    }
+    bitcoinPrice = (rand() % 11 - 5) / 100.0 * BITCOIN_INITIAL + BITCOIN_INITIAL;
+    ethereumPrice = (rand() % 11 - 5) / 100.0 * ETHEREUM_INITIAL + ETHEREUM_INITIAL;
+    ripplePrice = (rand() % 11 - 5) / 100.0 * RIPPLE_INITIAL + RIPPLE_INITIAL;
 
+    printf("\nCotacao Atual de Criptos moedas\n");
     diviser();
-    printf("Saldo Atual: %.2f\n", user.balanceReal);
-    
-    int choice = 0;
-    printf("\nQual valor do depósito?\n");
+    printf("1 Bitcoin: R$ %.2f\n", bitcoinPrice);
+    printf("1 Ethereum: R$ %.2f\n", ethereumPrice);
+    printf("1 Ripple: R$ %.2f\n", ripplePrice);
     diviser();
-    printf("R$ ");
-    scanf("%i", &choice);
-    diviser();
-    
-    if (choice <= 0) {
-        printf("Seu depósito não pode ser negativo ou zero.\n");
-        fclose(file);
-        deposit(userId); 
-    } else {
-        user.balanceReal += choice;
-
-        fseek(file, -sizeof(User), SEEK_CUR);
-        fwrite(&user, sizeof(User), 1, file);
-
-        printf("Saldo Atualizado: %.2f\n", user.balanceReal);
-        diviser();
-        
-        fclose(file);
-    }
 }
+
+void deposit(int userId) {
+  User user;
+  int found = 0;
+  float amount = 0;
+  
+  FILE *file = fopen("users.dat", "r+b"); 
+  if (file == NULL) {
+      printf("Erro ao verificar seu saldo\n");
+      return;
+  }
+
+  while (fread(&user, sizeof(User), 1, file) == 1) {
+      if (user.id == userId) { 
+          found = 1;
+          break;
+      }
+  }
+  if (!found) {
+      printf("Usuario nao encontrado.\n");
+      fclose(file);
+      return;
+  }
+  diviser();
+  printf("Saldo Atual: R$%.2f\n", user.balanceReal);
+  
+  
+  printf("\nQual valor do deposito?\n");
+  diviser();
+  printf("R$ ");
+  scanf("%f", &amount);
+  diviser();
+  
+  if (amount <= 0) {
+      printf("Seu deposito nao pode ser negativo ou zero.\n");
+      fclose(file);
+      deposit(userId); 
+  } else {
+      user.balanceReal += amount;
+
+      fseek(file, -sizeof(User), SEEK_CUR);
+      fwrite(&user, sizeof(User), 1, file);
+
+      printf("Saldo Atualizado: R$ %.2f\n", user.balanceReal);
+      diviser();
+      
+      fclose(file);
+  }
+}
+
+void buyCrypto(int userId){
+
+  updateCryptoPrices();
+  User user;
+  int found = 0, optionCripto = 0, confirmBuy = 0;
+  float amount = 0;
+
+  FILE *file = fopen("users.dat", "r+b");
+  if (file == NULL) {
+      printf("Erro ao verificar seu saldo\n");
+      return;
+  }
+
+  while (fread(&user, sizeof(User), 1, file) == 1) {
+      if (user.id == userId) { 
+          found = 1;
+          break;
+      }
+  }
+    if (!found) {
+      printf("Usuario nao encontrado.\n");
+      fclose(file);
+      return;
+  }
+  printf("\nComprar Criptosmoedas\n");
+  diviser();
+
+  printf("Saldo Atual\n");
+  printf("R$ %.2f (Reais)\n", user.balanceReal);
+  printf("\nSaldo Atual de Criptos\n");
+  diviser();
+  printf("BTC %.5f (Bitcoin)\n", user.balanceBitcoin);
+  printf("ETC %.5f (Ethereum)\n", user.balanceEthereum);
+  printf("XRP %.5f (Ripple)\n", user.balanceRipple);
+  diviser();
+
+  
+
+  printf("\nFaca sua compra\n");
+  printf("1 - Bitcoin (BTC)\n");
+  printf("2 - Ethereum (ETC)\n");
+  printf("3 - Ripple (XRP)\n");
+
+  printf("Digite sua escolha: ");
+  scanf("%i", &optionCripto);
+
+  printf("Digite o valor que deseja investir em R$ ");
+  scanf("%f", &amount);
+
+
+
+  if (amount > user.balanceReal) {
+      printf("\nSaldo insuficiente para realizar a compra.\n");
+      fclose(file);
+      return;
+  }
+  printf("\nVoce deseja comprar R$ %.2f em ", amount);
+
+  switch (optionCripto) {
+      case 1:
+        printf("Bitcoin (BTC)?\n");
+        diviser();
+      break;
+      case 2:
+        printf("Ethereum (ETC)?\n");
+        diviser();
+      break;
+      case 3:
+        printf("Ripple (XRP)?\n");
+        diviser();
+      break;
+      default:
+        diviser();
+        printf("\nOpcao invalida\n");
+        diviser();
+        buyCrypto(user.id); 
+      break;
+  }
+
+  printf("\nConfirmacao\n");
+  diviser();
+  printf("1 - Sim\n");
+  printf("2 - Nao\n");
+  diviser();
+  scanf("%i", &confirmBuy); 
+
+  if (confirmBuy == 1) {
+    switch (optionCripto) {
+        case 1:
+          diviser();
+          amount -= amount * BITCOIN_BUY_FEE;
+          user.balanceReal -= amount;
+          user.balanceBitcoin += amount / bitcoinPrice;
+          printf("Compra realizada!\nSaldo BTC: %.5f\n", user.balanceBitcoin);
+          diviser();
+        break;
+        case 2:
+          diviser();
+          amount -= amount * ETHEREUM_BUY_FEE;
+          user.balanceReal -= amount;
+          user.balanceEthereum += amount / bitcoinPrice;
+          printf("Compra realizada!\nSaldo ETC: %.5f\n", user.balanceEthereum);
+          diviser();
+        break;
+        case 3:
+          diviser();
+          amount -= amount * RIPPLE_BUY_FEE;
+          user.balanceReal -= amount;
+          user.balanceRipple += amount / bitcoinPrice;
+          printf("Compra realizada!\nSaldo XRP: %.5f\n", user.balanceRipple);
+          diviser();
+        break;
+        default:
+          diviser();
+          printf("\nOpcao invalida\n");
+          diviser();
+          buyCrypto(user.id); 
+        break;
+    }
+
+    //REESCREVER O ARQUIVO
+    fseek(file, -sizeof(User), SEEK_CUR);
+    fwrite(&user, sizeof(User), 1, file);
+    //FECHAR O ARQUIVO PARA SALVAR OS DADOS
+    fclose(file);
+
+  }else{
+    printf("\nCompra Cancelada!\n");
+    return;
+  }
+}
+
 
 
 FILE *openFile(const char *filename, const char *mode) {
