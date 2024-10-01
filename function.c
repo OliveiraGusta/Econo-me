@@ -357,7 +357,6 @@ void updateCryptoPrices() {
 }
 
 void buyCrypto(int userId){
-
   updateCryptoPrices();
   User user;
   int found = 0, optionCripto = 0, confirmBuy = 0;
@@ -497,7 +496,6 @@ void buyCrypto(int userId){
 }
 
 void sellCrypto(int userId){
-
   updateCryptoPrices();
   User user;
   int found = 0, optionCripto = 0, confirmSell = 0;
@@ -568,29 +566,29 @@ void sellCrypto(int userId){
         totalCost = (amount * bitcoinPrice) - fee;
 
         if (totalCost > user.balanceBitcoin * bitcoinPrice) {
-            printf("\nSaldo insuficiente para realizar a venda somado a taxa.\n");
+            printf("\nSaldo insuficiente!\nCusto Total + Taxa (R$%.2f): R$%.2f em Bitcoin\n", fee, totalCost);
             fclose(file);
             return;
           }
 
       break;
       case 2:
-        fee = amount * ETHEREUM_SELL_FEE;
-        totalCost = amount + fee;
+        fee = (amount * ethereumPrice) * ETHEREUM_SELL_FEE;
+        totalCost = (amount * ethereumPrice) - fee;
 
-        if (totalCost > user.balanceEthereum) {
-          printf("\nSaldo insuficiente para realizar a venda somado a taxa.\n");
+        if (totalCost > user.balanceEthereum * ethereumPrice) {
+          printf("\nSaldo insuficiente:\nCusto Total + Taxa (R$%.2f): R$%.2f em Ethereum\n", fee, totalCost);
           fclose(file);
           return;
         }
 
       break;
       case 3:
-        fee = amount * RIPPLE_SELL_FEE;
-        totalCost = amount + fee;
+        fee = (amount * ripplePrice) *  RIPPLE_SELL_FEE;
+        totalCost = (amount * ripplePrice) - fee;
 
-      if (totalCost > user.balanceRipple) {
-        printf("\nSaldo insuficiente para realizar a venda somado a taxa.\n");
+      if (totalCost > user.balanceRipple * ripplePrice) {
+        printf("\nSaldo insuficiente:\nCusto Total + Taxa (R$%.2f): R$%.2f em Ripple\n", fee, totalCost);
         fclose(file);
         return;
       }
@@ -648,7 +646,7 @@ void sellCrypto(int userId){
         break;
         case 2:
           user.balanceReal += totalCost;
-          user.balanceEthereum += amount * ethereumPrice;
+          user.balanceEthereum -= amount;
           printf("\nSaldo Atual ETC: %.7f\n", user.balanceEthereum);
           addTransaction(user.id, "Venda", totalCost, amount, "Ethereum");
 
@@ -656,7 +654,7 @@ void sellCrypto(int userId){
         break;
         case 3:
           user.balanceReal += totalCost;
-          user.balanceRipple += amount * ripplePrice;
+          user.balanceRipple -= amount;
           printf("\nSaldo Atual XRP: %.7f\n", user.balanceRipple);
           addTransaction(user.id, "Venda", totalCost, amount, "Ripple");
           diviser();
@@ -664,11 +662,8 @@ void sellCrypto(int userId){
     }
     printf("\nSaldo Atual R$: %.2f\n", user.balanceReal);
 
-    //REESCREVER O ARQUIVO
     fseek(file, -sizeof(User), SEEK_CUR);
     fwrite(&user, sizeof(User), 1, file);
-
-    //FECHAR O ARQUIVO PARA SALVAR OS DADOS
     fclose(file);
 
   }else{
