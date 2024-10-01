@@ -16,15 +16,14 @@ void welcome() {
 void menu(int userId){
   printf("\nEscolha uma opcao:\n");
   diviser();
-  printf("1 - Listar Usuarios\n");
-  printf("2 - Consultar Informacoes e Saldo do Usuario\n");
-  printf("3 - Consultar Extrato\n");
-  printf("4 - Depositar na Carteira(R$)\n");
-  printf("5 - Sacar da Carteira(R$)\n");
-  printf("6 - Comprar Criptomoedas\n");
-  printf("7 - Vender Criptomoedas\n");
-  printf("8 - Ver Cotacao Atual\n");
-  printf("9 - Sair\n");
+  printf("1 - Consultar Informacoes e Saldo do Usuario\n");
+  printf("2 - Consultar Extrato\n");
+  printf("3 - Depositar na Carteira(R$)\n");
+  printf("4 - Sacar da Carteira(R$)\n");
+  printf("5 - Comprar Criptomoedas\n");
+  printf("6 - Vender Criptomoedas\n");
+  printf("7 - Ver Cotacao Atual\n");
+  printf("8 - Sair\n");
   diviser();
 }
 void diviser() { printf("-----------------------\n"); }
@@ -46,29 +45,6 @@ void loginOrRegister(User *user) {
     diviser();
     loginOrRegister(user);
   }
-}
-void listUsers() {
-  FILE *file = openFile("users.dat", "rb");
-  if (!file) {
-    return;
-  }
-  
-  User user;
-  printf("\nLista de Usuarios:\n");
-  diviser();
-
-  while (fread(&user, sizeof(User), 1, file) == 1) {
-    printf("ID: %d\n", user.id);
-    printf("CPF: %s\n", user.cpf);
-    printf("Senha: %s\n", user.password);
-    printf("Saldo em Reais: %.2f\n", user.balanceReal);
-    printf("Saldo em Bitcoin: %.7f\n", user.balanceBitcoin);
-    printf("Saldo em Ethereum: %.7f\n", user.balanceEthereum);
-    printf("Saldo em Ripple: %.7f\n", user.balanceRipple);
-    diviser();
-  }
-
-  fclose(file);
 }
 
 // User
@@ -251,6 +227,7 @@ void deposit(int userId) {
       fseek(file, -sizeof(User), SEEK_CUR);
       fwrite(&user, sizeof(User), 1, file);
 
+      addTransaction(userId, "Deposito", amount, 0, "");
       printf("Saldo Atualizado: R$ %.2f\n", user.balanceReal);
       diviser();
       
@@ -301,6 +278,7 @@ void withdraw(int userId){
       fseek(file, -sizeof(User), SEEK_CUR);
       fwrite(&user, sizeof(User), 1, file);
 
+      addTransaction(userId, "Saque", amount, 0, "");
       printf("Saldo Atualizado: R$ %.2f\n", user.balanceReal);
       diviser();
       
@@ -478,18 +456,21 @@ void buyCrypto(int userId){
           user.balanceReal -= totalCost;
           user.balanceBitcoin += amount / bitcoinPrice;
           printf("Saldo BTC: %.7f\n", user.balanceBitcoin);
+          addTransaction(user.id, "Compra", totalCost, amount / bitcoinPrice, "Bitcoin");
           diviser();
         break;
         case 2:
           user.balanceReal -= totalCost;
           user.balanceEthereum += amount / ethereumPrice;
-          printf("Saldo Atual ETC: %.7f\n", user.balanceEthereum);
+          printf("Saldo ETC: %.7f\n", user.balanceEthereum);
+          addTransaction(user.id, "Compra", totalCost, amount / ethereumPrice, "Ethereum");
           diviser();
         break;
         case 3:
           user.balanceReal -= totalCost;
           user.balanceRipple += amount / ripplePrice;
-          printf("Saldo Atual XRP: %.7f\n", user.balanceRipple);
+          printf("Saldo XRP: %.7f\n", user.balanceRipple);
+          addTransaction(user.id, "Compra", totalCost, amount / ripplePrice, "Ripple");
           diviser();
         break;
     }
@@ -651,19 +632,24 @@ void sellCrypto(int userId){
         case 1:
           user.balanceReal += totalCost;
           user.balanceBitcoin -= amount;
+          
           printf("\nSaldo Atual BTC: %.7f\n", user.balanceBitcoin);
+          addTransaction(user.id, "Venda", totalCost, amount, "Bitcoin");
           diviser();
         break;
         case 2:
           user.balanceReal += totalCost;
           user.balanceEthereum += amount * ethereumPrice;
           printf("\nSaldo Atual ETC: %.7f\n", user.balanceEthereum);
+          addTransaction(user.id, "Venda", totalCost, amount, "Ethereum");
+
           diviser();
         break;
         case 3:
           user.balanceReal += totalCost;
           user.balanceRipple += amount * ripplePrice;
           printf("\nSaldo Atual XRP: %.7f\n", user.balanceRipple);
+          addTransaction(user.id, "Venda", totalCost, amount, "Ripple");
           diviser();
         break;
     }
@@ -680,6 +666,71 @@ void sellCrypto(int userId){
     printf("\nVenda Cancelada!\n");
     return;
   }
+}
+
+void addTransaction(int userId, const char *transactionType,  float amount, float cryptoAmount, const char *cryptoType) {
+      
+      time_t t = time(NULL);
+      struct tm tm = *localtime(&t);
+     
+      FILE *file = fopen("transactions.dat", "a+b"); 
+      if (file == NULL) {
+          printf("Erro ao acessar o arquivo de transações.\n");
+          return;
+      }
+      Transaction transaction;
+      transaction.userId = userId;
+      strcpy(transaction.transactionType, transactionType);
+      transaction.amount = amount;
+      transaction.cryptoAmount = cryptoAmount;
+
+      strcpy(transaction.cryptoType, cryptoType);
+  
+      snprintf(transaction.date, sizeof(transaction.date), "%02d/%02d/%04d %02dh%02d", 
+              tm.tm_mday, tm.tm_mon + 1, tm.tm_year + 1900, tm.tm_hour, tm.tm_min);
+
+      fwrite(&transaction, sizeof(Transaction), 1, file);
+      fclose(file);
+  }
+
+
+
+
+void showTransactionHistory(int userId) {
+    FILE *file = fopen("transactions.dat", "rb");
+    if (file == NULL) {
+        printf("Erro ao acessar o arquivo de transações.\n");
+        return;
+    }
+
+    Transaction transaction;
+    int found = 0;
+    printf("\nSeu Extrato\n");
+    diviser();
+
+    while (fread(&transaction, sizeof(Transaction), 1, file) == 1) {
+        if (transaction.userId == userId) {
+            found = 1;
+            printf("%s\n", transaction.transactionType);
+            if (strcmp(transaction.transactionType, "Deposito") == 0 || strcmp(transaction.transactionType, "Saque") == 0) {
+                printf("%cR$ %.2f\n", (strcmp(transaction.transactionType, "Saque") == 0) ? '- ' : '+ ', transaction.amount);
+            } else if (strcmp(transaction.transactionType, "Compra") == 0 || strcmp(transaction.transactionType, "Venda") == 0) {
+                printf("%cR$ %.2f %c%s %.4f\n",
+                       (strcmp(transaction.transactionType, "Compra") == 0) ? '- ' : '+ ',
+                       transaction.amount,
+                       (strcmp(transaction.transactionType, "Compra") == 0) ? '+ ' : '- ',
+                       transaction.cryptoType, transaction.cryptoAmount);
+            }
+          
+            printf("%s\n", transaction.date);
+            diviser();
+        }
+    }
+
+    if (!found) {
+        printf("Nenhuma transacao encontrada.\n");
+    }
+    fclose(file);
 }
 
 
