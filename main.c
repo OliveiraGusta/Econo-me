@@ -16,33 +16,27 @@ int main() {
         
         switch (option) {
             case 1:
-                listUsers();
-                break;
-            case 2:
                 checkUserInfos(user.id);
                 break;
-            case 3:
-                printf("\nConsultar Extrato\n");
-                printf("\nEm Breve...\n");
-                diviser();
+            case 2:
+               showTransactionHistory(user.id);
                 break;
-            case 4:
+            case 3:
                 deposit(user.id);
                 break;
-            case 5:
+            case 4:
                 withdraw(user.id);
                 break;
-            case 6:
+            case 5:
                 buyCrypto(user.id); 
                 break;
-            case 7:
+            case 6:
                 sellCrypto(user.id); 
-
                 break;
-            case 8:
+            case 7:
                 updateCryptoPrices();
                 break;
-            case 9:
+            case 8:
                 printf("Encerrando Sessao...\n");
                 break;
             default:
@@ -51,7 +45,7 @@ int main() {
                 diviser();
                 break;
         }
-    } while (option != 9);
+    } while (option != 8);
 
     return 0;
 }
