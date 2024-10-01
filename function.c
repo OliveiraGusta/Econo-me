@@ -3,7 +3,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <time.h>
-
+// VALORES DAS CRIPTOS
 float bitcoinPrice = 0, ethereumPrice = 0, ripplePrice = 0;
 float oldBitcoinPrice = 0, oldEthereumPrice = 0, oldRipplePrice = 0;
 
@@ -67,7 +67,7 @@ void loginUser(User *user) {
     printf("Erro ao abrir o arquivo.\n");
     return;
   }
-
+// PROCURA UM USUÁRIO COM O CPF E SENHA, CASO ENCONTRAR É UM USUÁRIO
   while (fread(&tempUser, sizeof(User), 1, file) == 1) {
           if (strcmp(tempUser.cpf, cpf) == 0 && strcmp(tempUser.password, password) == 0) {
               *user = tempUser; 
@@ -232,10 +232,10 @@ void deposit(int userId) {
       deposit(userId); 
   } else {
       user.balanceReal += amount;
-
+      //REESCREVE O ARQUIVO
       fseek(file, -sizeof(User), SEEK_CUR);
       fwrite(&user, sizeof(User), 1, file);
-
+      //ADICIONA A TRANSAÇÃO AO ARQUIVO BASEADO NO ID DO USUÁRIO
       addTransaction(userId, "Deposito", amount, 0, "");
       printf("Saldo Atualizado: R$ %.2f\n", user.balanceReal);
       diviser();
@@ -298,11 +298,11 @@ void withdraw(int userId){
 // Cryptos
 void updateCryptoPrices() {
     srand(time(0));
-
+    //SALVO PREÇO ANTERIOS DAS CRIPTOS
     oldBitcoinPrice = bitcoinPrice;
     oldEthereumPrice = ethereumPrice;
     oldRipplePrice = ripplePrice;
-
+    //ATUALIZA A COTAÇÃO DAS CRIPTOS BASEADAS EM 5%
     bitcoinPrice = (rand() % 11 - 5) / 100.0 * BITCOIN_INITIAL + BITCOIN_INITIAL;
     ethereumPrice = (rand() % 11 - 5) / 100.0 * ETHEREUM_INITIAL + ETHEREUM_INITIAL;
     ripplePrice = (rand() % 11 - 5) / 100.0 * RIPPLE_INITIAL + RIPPLE_INITIAL;
@@ -311,7 +311,7 @@ void updateCryptoPrices() {
     printf("\nCotacao Atual de Criptomoedas\n");
     diviser();
     
-    // Bitcoin
+    // PREÇO BITCOIN E A DIFERENÇA DO PREÇO ANTERIOR
     printf("1 Bitcoin: R$ %.2f ", bitcoinPrice);
     if (oldBitcoinPrice != 0) {
       if (bitcoinPrice > oldBitcoinPrice) {
@@ -325,7 +325,7 @@ void updateCryptoPrices() {
     else{
       printf("\n");
     }
-    // Ethereum
+    // PREÇO ETHEREUM E A DIFERENÇA DO PREÇO ANTERIOR
     printf("1 Ethereum: R$ %.2f ", ethereumPrice);
     if (oldEthereumPrice != 0) {
       if (ethereumPrice > oldEthereumPrice) {
@@ -339,7 +339,7 @@ void updateCryptoPrices() {
         printf("\n");
       }
 
-    // Ripple
+    // PREÇO RIPPLE E A DIFERENÇA DO PREÇO ANTERIOR
     printf("1 Ripple: R$ %.2f ", ripplePrice);
     if (oldRipplePrice != 0) {
       if (ripplePrice > oldRipplePrice) {
@@ -429,7 +429,7 @@ void buyCrypto(int userId){
       return;
   }
   printf("\nVoce deseja comprar R$ %.2f em ", amount);
-
+  //EXIBE A CONFIRMAÇAO DA COMPRA DA CRIPTO SOMADA À TAXA
   switch (optionCripto) {
       case 1:
         printf("Bitcoin (BTC) + taxa R$%2.f?\n", + fee);
@@ -458,6 +458,8 @@ void buyCrypto(int userId){
   diviser();
   scanf("%i", &confirmBuy); 
   printf("\nCompra realizada!\n");
+
+  //CÁLCULO DA COMPRA DA CRIPTO SOMADA AS TAXAS E SALVANDO NO EXTRATO
   if (confirmBuy == 1) {
     switch (optionCripto) {
         case 1:
@@ -483,10 +485,10 @@ void buyCrypto(int userId){
         break;
     }
 
-    //REESCREVER O ARQUIVO
+    //REESCREVE O ARQUIVO
     fseek(file, -sizeof(User), SEEK_CUR);
     fwrite(&user, sizeof(User), 1, file);
-    //FECHAR O ARQUIVO PARA SALVAR OS DADOS
+    //FECHA O ARQUIVO PARA SALVAR OS DADOS
     fclose(file);
 
   }else{
@@ -682,13 +684,14 @@ void addTransaction(int userId, const char *transactionType,  float amount, floa
           }
           fclose(file);
       }
+      //VERIFICA SE TEM 100 LINHAS DE EXTRATO POR USUÁRIO  
       if (transactionCount == 100) {
           for (int i = 1; i < 100; i++) {
               transactions[i - 1] = transactions[i];
           }
           transactionCount = 99;
       }
-     
+      //SALVA AS VARIÁVEIS DA TRANSAÇÃO NA STRUCT TRANSICTION
       Transaction transaction;
       transaction.userId = userId;
       strcpy(transaction.transactionType, transactionType);
@@ -698,7 +701,7 @@ void addTransaction(int userId, const char *transactionType,  float amount, floa
       time_t t = time(NULL);
       struct tm tm = *localtime(&t);
       strcpy(transaction.cryptoType, cryptoType);
-  
+      // SALVA DATA E HORÁRIO DA TRANSAÇÃO
       snprintf(transaction.date, sizeof(transaction.date), "%02d/%02d/%04d %02dh%02d", 
               tm.tm_mday, tm.tm_mon + 1, tm.tm_year + 1900, tm.tm_hour, tm.tm_min);
   
@@ -721,7 +724,7 @@ void showTransactionHistory(int userId) {
     int found = 0;
     printf("\nSeu Extrato\n");
     diviser();
-
+  // LOOP E VERIFICÃÇÃO PARA EXIBIR O EXTRATO FORMATADO DO USUÁRIO
     while (fread(&transaction, sizeof(Transaction), 1, file) == 1) {
         if (transaction.userId == userId) {
             found = 1;

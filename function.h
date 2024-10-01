@@ -2,6 +2,7 @@
 #define FUNCTION_H
 #include <stdio.h>
 
+// VALORES INICIAIS E TAXAS DAS CRIPTOS
 #define BITCOIN_INITIAL 354798.40
 #define BITCOIN_BUY_FEE 0.02    // 2% 
 #define BITCOIN_SELL_FEE 0.03   // 3% 
@@ -14,9 +15,8 @@
 #define RIPPLE_BUY_FEE 0.01     // 1% 
 #define RIPPLE_SELL_FEE 0.01    // 1% 
 
-#define VARIATION_PRICE 0.05 //5%
 
-
+//STRUCT DOS DADOS DO USUÁRIO
 typedef struct {
     int id;
     char cpf[12];
@@ -27,6 +27,7 @@ typedef struct {
     float balanceRipple;
 } User;
 
+//STRUCT DOS DADOS DO EXTRATO
 typedef struct {
     int userId;      
     char transactionType[20];  
@@ -37,29 +38,29 @@ typedef struct {
 } Transaction;
 
 
-// Tools
+//FERRAMENTAS
 void welcome();            
 void diviser();            
 void menu(int userId); 
 void loginOrRegister(User *user);
       
-// User
+//USUÁRIO
 void loginUser(User *user);            
 void registerUser(User *user);
 void checkUserInfos(int userId);              
 void deposit(int userId);     
 void withdraw(int userId);         
 
-// Cryptos
+//CRIPTOS
 void updateCryptoPrices();
 void buyCrypto(int userId);
 void sellCrypto(int userId);     
 
-// Transactions
+//TRANSAÇÕES
 void addTransaction(int userId, const char *transactionType, float amount, float cryptoAmount, const char *cryptoType);
 void showTransactionHistory(int userId);
 
-// Files
+//ARQUIVOS
 FILE *openFile(const char *filename, const char *mode); 
 
 #endif

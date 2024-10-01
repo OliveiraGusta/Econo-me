@@ -6,9 +6,11 @@ int main() {
     User user;
     welcome();
     diviser();
+    //ESCOLHA DE CADASTRO OU LOGIN DO USUÁRIO
     loginOrRegister(&user);
+    //VALORES INICIAIS DAS CRIPTOS
     updateCryptoPrices();
-
+    //LOPPING DO MENU
     int option;
     do {
         menu(user.id);  
