@@ -49,18 +49,18 @@ void loginOrRegister(User *user) {
 
 // User
 void loginUser(User *user) {
-  char cpf[11];
-  char password[5];
+  char cpf[12];
+  char password[6];
   int isUser = 0;
   User tempUser;
 
   printf("\nFaca seu Login\n");
   diviser();
   printf("Digite o CPF (apenas numeros): ");
-  scanf("%s", cpf);
+  scanf("%11s", cpf);
 
   printf("Digite a senha: ");
-  scanf("%s", password);
+  scanf("%5s", password);
 
   FILE *file = fopen("users.dat", "rb");
   if (!file) {
@@ -68,84 +68,93 @@ void loginUser(User *user) {
     return;
   }
 
-  while (fread(&user, sizeof(User), 1, file) == 1) {
-    if (strcmp(tempUser.cpf, cpf) == 0 && strcmp(tempUser.password, password) == 0) {
-      *user = tempUser; 
-      isUser = 1;
-      break;
-    }
-  }
-
-  fclose(file);
-  if (isUser) {
-    diviser();
-    printf("Seja Bem Vindo!\n");
-    diviser();
-
-  } else {
-    diviser();
-    printf("Usuario nao encontrado.\nCPF ou Senha Incorretos.\n");
-    diviser();
-    loginOrRegister(user);
-  }
-}
-void registerUser(User *user) {
-  FILE *file = openFile("users.dat", "rb");
-  if (!file) {
-    return;
-  }
-  
-  int userCount = 0;
-  User tempUser;
-
   while (fread(&tempUser, sizeof(User), 1, file) == 1) {
-    userCount++;
-  }
-  fclose(file);
-
-  if (userCount >= 10) {
-    diviser();
-    printf("\nLimite de 10 usuarios atingido\n");
-    diviser();
-    loginOrRegister(user);
-  }
-
-  user->id = 1;
-  file = fopen("users.dat", "rb");
-  if (file != NULL) {
-    User tempUser;  
-    while (fread(&tempUser, sizeof(User), 1, file) == 1) {
-      if (tempUser.id >= user->id) {
-        user->id = tempUser.id + 1; 
+          if (strcmp(tempUser.cpf, cpf) == 0 && strcmp(tempUser.password, password) == 0) {
+              *user = tempUser; 
+              isUser = 1;
+              break;
+          }
       }
+
+      fclose(file);
+
+      if (isUser) {
+          diviser();
+          printf("Seja Bem Vindo!\n");
+          diviser();
+      } else {
+          diviser();
+          printf("Usuário não encontrado.\nCPF ou Senha incorretos.\n");
+          diviser();
+          loginOrRegister(user);
+      }
+  }
+void registerUser(User *user) {
+    FILE *file = fopen("users.dat", "rb"); 
+    if (!file) {
+        file = fopen("users.dat", "wb");  
+        if (!file) {
+            printf("Erro ao abrir o arquivo de usuários.\n");
+            return;
+        }
+    }
+
+    int userCount = 0;
+    User tempUser;
+
+    while (fread(&tempUser, sizeof(User), 1, file) == 1) {
+        userCount++;
     }
     fclose(file);
-  }
-  
-  printf("\nFaca seu Cadastro\n");
-  diviser();
-  printf("Digite o CPF (apenas numeros): ");
-  scanf("%s", user->cpf);
 
-  printf("Digite a senha: ");
-  scanf("%s", user->password);
+    if (userCount >= 10) {
+        diviser();
+        printf("\nLimite de 10 usuários atingido\n");
+        diviser();
+        loginOrRegister(user);  
+        return;
+    }
 
-  user->balanceReal = 0;
-  user->balanceBitcoin = 0;
-  user->balanceEthereum = 0;
-  user->balanceRipple = 0;
-  
-  
-  file = openFile("users.dat", "ab");
-  if (!file) {
-    return;
-  }
+   
+    user->id = 1; 
+    file = fopen("users.dat", "rb");  
+    if (file != NULL) {
+        while (fread(&tempUser, sizeof(User), 1, file) == 1) {
+            if (tempUser.id >= user->id) {
+                user->id = tempUser.id + 1; 
+            }
+        }
+        fclose(file);
+    }
 
-  fwrite(user, sizeof(User), 1, file);
-  fclose(file);
-  printf("\nUsario Registrado e Logado com Sucesso!\n");
-  diviser();
+  
+    printf("\nFaca seu Cadastro\n");
+    diviser();
+    printf("Digite o CPF (apenas numeros): ");
+    scanf("%11s", user->cpf);  
+
+    printf("Digite a senha (até 5 dígitos): ");
+    scanf("%5s", user->password);  
+
+    user->balanceReal = 0.0;
+    user->balanceBitcoin = 0.0;
+    user->balanceEthereum = 0.0;
+    user->balanceRipple = 0.0;
+
+  
+    file = fopen("users.dat", "ab");
+    if (!file) {
+        printf("Erro ao abrir o arquivo de usuários.\n");
+        return;
+    }
+
+    fwrite(user, sizeof(User), 1, file);
+    fclose(file);
+
+    printf("\nUsuario Registrado e Logado com Sucesso!\n");
+    diviser();
 }
+
 void checkUserInfos(int userId){
   User user;
   int found = 0;
@@ -669,32 +678,42 @@ void sellCrypto(int userId){
 }
 
 void addTransaction(int userId, const char *transactionType,  float amount, float cryptoAmount, const char *cryptoType) {
-      
-      time_t t = time(NULL);
-      struct tm tm = *localtime(&t);
-     
-      FILE *file = fopen("transactions.dat", "a+b"); 
-      if (file == NULL) {
-          printf("Erro ao acessar o arquivo de transações.\n");
-          return;
+      FILE *file = fopen("transactions.dat", "rb+"); 
+      Transaction transactions[100];
+      int transactionCount = 0;
+      if (file != NULL) {
+          while (fread(&transactions[transactionCount], sizeof(Transaction), 1, file) == 1) {
+              transactionCount++;
+          }
+          fclose(file);
       }
+      if (transactionCount == 100) {
+          for (int i = 1; i < 100; i++) {
+              transactions[i - 1] = transactions[i];
+          }
+          transactionCount = 99;
+      }
+     
       Transaction transaction;
       transaction.userId = userId;
       strcpy(transaction.transactionType, transactionType);
       transaction.amount = amount;
       transaction.cryptoAmount = cryptoAmount;
-
+    
+      time_t t = time(NULL);
+      struct tm tm = *localtime(&t);
       strcpy(transaction.cryptoType, cryptoType);
   
       snprintf(transaction.date, sizeof(transaction.date), "%02d/%02d/%04d %02dh%02d", 
               tm.tm_mday, tm.tm_mon + 1, tm.tm_year + 1900, tm.tm_hour, tm.tm_min);
-
-      fwrite(&transaction, sizeof(Transaction), 1, file);
-      fclose(file);
+  
+      transactions[transactionCount] = transaction;
+      file = fopen("transactions.dat", "wb");
+        if (file != NULL) {
+            fwrite(transactions, sizeof(Transaction), transactionCount + 1, file);
+            fclose(file);
+        }
   }
-
-
-
 
 void showTransactionHistory(int userId) {
     FILE *file = fopen("transactions.dat", "rb");
@@ -713,12 +732,12 @@ void showTransactionHistory(int userId) {
             found = 1;
             printf("%s\n", transaction.transactionType);
             if (strcmp(transaction.transactionType, "Deposito") == 0 || strcmp(transaction.transactionType, "Saque") == 0) {
-                printf("%cR$ %.2f\n", (strcmp(transaction.transactionType, "Saque") == 0) ? '- ' : '+ ', transaction.amount);
+                printf("%cR$ %.2f\n", (strcmp(transaction.transactionType, "Saque") == 0) ? '-' : '+', transaction.amount);
             } else if (strcmp(transaction.transactionType, "Compra") == 0 || strcmp(transaction.transactionType, "Venda") == 0) {
                 printf("%cR$ %.2f %c%s %.4f\n",
-                       (strcmp(transaction.transactionType, "Compra") == 0) ? '- ' : '+ ',
+                       (strcmp(transaction.transactionType, "Compra") == 0) ? '-' : '+',
                        transaction.amount,
-                       (strcmp(transaction.transactionType, "Compra") == 0) ? '+ ' : '- ',
+                       (strcmp(transaction.transactionType, "Compra") == 0) ? '+' : '-',
                        transaction.cryptoType, transaction.cryptoAmount);
             }
           
