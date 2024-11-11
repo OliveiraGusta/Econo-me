@@ -1,5 +1,5 @@
-#ifndef FUNCTION_H
-#define FUNCTION_H
+#ifndef USER_H
+#define USER_H
 #include <stdio.h>
 
 // VALORES INICIAIS E TAXAS DAS CRIPTOS
@@ -34,7 +34,7 @@ typedef struct {
     float amount;     
     float cryptoAmount;
     char cryptoType[10];    
-    char date[20];    
+    char date[20]; 
 } Transaction;
 
 
