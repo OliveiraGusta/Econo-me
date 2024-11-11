@@ -2,6 +2,17 @@
 #define ADMIN_H
 #include <stdio.h>
 
+//STRUCT DOS DADOS DO USUÁRIO
+typedef struct {
+    int id;
+    char cpf[12];
+    char password[6];
+    char name[15];
+    float balanceReal;
+    float balanceBitcoin;
+    float balanceEthereum;
+    float balanceRipple;
+} User;
 
 typedef struct {
     int id;
@@ -19,6 +30,9 @@ void menu(int adminId);
 void loginOrRegister(Admin *admin);
 void loginAdmin(Admin *admin);            
 void registerAdmin(Admin *admin);
+
+//FUNOCES DE USUARIO
+void registerUser(User *user);
 
 
 #endif
