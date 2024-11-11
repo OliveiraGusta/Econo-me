@@ -13,6 +13,8 @@ void diviser() { printf("-----------------------\n"); }
 void loginOrRegister() {
   User user;
   int choice = 0;
+  printf("PAINEL DO ADMINISTRADOR\n");
+  diviser();
   printf("Faça seu Login ou Cadastro:\n");
   printf("1 - Cadastro\n");
   printf("2 - Login\n");

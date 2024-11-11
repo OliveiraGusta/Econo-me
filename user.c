@@ -62,14 +62,14 @@ void loginUser(User *user) {
   printf("Digite a senha: ");
   scanf("%5s", password);
 
-  FILE *file = fopen("users.dat", "rb");
+  FILE *file = fopen("users_account.dat", "rb");
   if (!file) {
     printf("Erro ao abrir o arquivo.\n");
     return;
   }
 // PROCURA UM USUÁRIO COM O CPF E SENHA, CASO ENCONTRAR É UM USUÁRIO
   while (fread(&tempUser, sizeof(User), 1, file) == 1) {
-          if (strcmp(tempUser.cpf, cpf) == 0 && strcmp(tempUser.password, password) == 0) {
+          if (strcmp(tempUser.cpf, cpf) == 0 && strcmp(tempUser.password, password) == 0){
               *user = tempUser; 
               isUser = 1;
               break;
@@ -90,9 +90,9 @@ void loginUser(User *user) {
       }
   }
 void registerUser(User *user) {
-    FILE *file = fopen("users.dat", "rb"); 
+    FILE *file = fopen("users_account.dat", "rb"); 
     if (!file) {
-        file = fopen("users.dat", "wb");  
+        file = fopen("users_account.dat", "wb");  
         if (!file) {
             printf("Erro ao abrir o arquivo de usuários.\n");
             return;
@@ -117,7 +117,7 @@ void registerUser(User *user) {
 
    
     user->id = 1; 
-    file = fopen("users.dat", "rb");  
+    file = fopen("users_account.dat", "rb");  
     if (file != NULL) {
         while (fread(&tempUser, sizeof(User), 1, file) == 1) {
             if (tempUser.id >= user->id) {
@@ -141,8 +141,9 @@ void registerUser(User *user) {
     user->balanceEthereum = 0.0;
     user->balanceRipple = 0.0;
 
+
   
-    file = fopen("users.dat", "ab");
+    file = fopen("users_account.dat", "ab");
     if (!file) {
         printf("Erro ao abrir o arquivo de usuários.\n");
         return;
@@ -158,7 +159,7 @@ void registerUser(User *user) {
 void checkUserInfos(int userId){
   User user;
   int found = 0;
-  FILE *file = fopen("users.dat", "r+b"); 
+  FILE *file = fopen("users_account.dat", "r+b"); 
   if (file == NULL) {
       printf("Erro ao verificar seu saldo\n");
       return;
@@ -196,7 +197,7 @@ void deposit(int userId) {
   int found = 0;
   float amount = 0;
   
-  FILE *file = fopen("users.dat", "r+b"); 
+  FILE *file = fopen("users_account.dat", "r+b"); 
   if (file == NULL) {
       printf("Erro ao verificar seu saldo\n");
       return;
@@ -248,7 +249,7 @@ void withdraw(int userId){
   int found = 0;
   float amount = 0;
   
-  FILE *file = fopen("users.dat", "r+b"); 
+  FILE *file = fopen("users_account.dat", "r+b"); 
   if (file == NULL) {
       printf("Erro ao verificar seu saldo\n");
       return;
@@ -363,7 +364,7 @@ void buyCrypto(int userId){
   float amount = 0;
   float fee = 0;
 
-  FILE *file = fopen("users.dat", "r+b");
+  FILE *file = fopen("users_account.dat", "r+b");
   if (file == NULL) {
       printf("Erro ao verificar seu saldo\n");
       return;
@@ -503,7 +504,7 @@ void sellCrypto(int userId){
   int found = 0, optionCripto = 0, confirmSell = 0;
   float amount = 0, fee = 0, totalCost = 0;
 
-  FILE *file = fopen("users.dat", "r+b");
+  FILE *file = fopen("users_account.dat", "r+b");
   if (file == NULL) {
       printf("Erro ao verificar seu saldo\n");
       return;
