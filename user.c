@@ -130,6 +130,9 @@ void registerUser(User *user) {
   
     printf("\nFaca seu Cadastro\n");
     diviser();
+    printf("Digite seu nome: ");
+    scanf("%14s", user->name);
+    diviser();
     printf("Digite o CPF (apenas numeros): ");
     scanf("%11s", user->cpf);  
 
