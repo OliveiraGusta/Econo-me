@@ -147,8 +147,10 @@ void registerAdmin(Admin *admin) {
     diviser();
 }
 
-void registerUser(User *user) {
+void registerUser() {
+
     FILE *file = fopen("users_account.dat", "rb"); 
+    
     if (!file) {
         file = fopen("users_account.dat", "wb");  
         if (!file) {
@@ -156,61 +158,57 @@ void registerUser(User *user) {
             return;
         }
     }
-
+    User user;
     int userCount = 0;
     User tempUser;
-
+  
     while (fread(&tempUser, sizeof(User), 1, file) == 1) {
         userCount++;
     }
     fclose(file);
-
     if (userCount >= 10) {
         diviser();
         printf("\nLimite de 10 usuários atingido\n");
-        diviser();
-        loginOrRegister(user);  
+        diviser(); 
         return;
     }
 
-   
-    user->id = 1; 
+    user.id = 1; 
     file = fopen("users_account.dat", "rb");  
+   
     if (file != NULL) {
         while (fread(&tempUser, sizeof(User), 1, file) == 1) {
-            if (tempUser.id >= user->id) {
-                user->id = tempUser.id + 1; 
+            if (tempUser.id >= user.id) {
+                user.id = tempUser.id + 1; 
             }
         }
         fclose(file);
     }
 
-  
+    printf("187");
     printf("\nFaca o Cadastro do novo usuario\n");
     diviser();
     printf("Digite o nome: ");
-    scanf("%14s", user->name);
+    scanf("%14s", user.name);
     diviser();
     printf("Digite o CPF (apenas numeros): ");
-    scanf("%11s", user->cpf);  
+    scanf("%11s", user.cpf);  
 
     printf("Digite a senha (até 5 dígitos): ");
-    scanf("%5s", user->password);  
+    scanf("%5s", user.password);  
 
-    user->balanceReal = 0.0;
-    user->balanceBitcoin = 0.0;
-    user->balanceEthereum = 0.0;
-    user->balanceRipple = 0.0;
+    user.balanceReal = 0.0;
+    user.balanceBitcoin = 0.0;
+    user.balanceEthereum = 0.0;
+    user.balanceRipple = 0.0;
 
-
-  
     file = fopen("users_account.dat", "ab");
     if (!file) {
         printf("Erro ao abrir o arquivo de usuários.\n");
         return;
     }
 
-    fwrite(user, sizeof(User), 1, file);
+    fwrite(&user, sizeof(User), 1, file);
     fclose(file);
 
     printf("\nUsuario Registrado e Logado com Sucesso!\n");

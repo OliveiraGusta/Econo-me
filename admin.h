@@ -32,7 +32,7 @@ void loginAdmin(Admin *admin);
 void registerAdmin(Admin *admin);
 
 //FUNOCES DE USUARIO
-void registerUser(User *user);
+void registerUser();
 
 
 #endif
