@@ -18,8 +18,7 @@ int main() {
         
         switch (option) {
             case 1:
-                printf("Cadastro de novo investidor");
-                printf("Em breve..");
+                registerUser();
                 break;
             case 2:
                 printf("Excluir investidor");
