@@ -18,34 +18,51 @@ int main() {
         
         switch (option) {
             case 1:
+                diviser();
                 registerUser();
                 break;
             case 2:
-                printf("Excluir investidor");
-                printf("Em breve..");
+                diviser();
+                listUsers();
                 break;
             case 3:
-                printf("Cadastro de criptomoeda");
-                printf("Em breve..");  
+                diviser();
+                deleteUser();
                 break;
             case 4:
-                printf("Excluir criptomoeda");
-                printf("Em breve..");
+                diviser();            
+                printf("\nCadastro de criptomoeda");
+                diviser();
+                printf("Em breve..");  
                 break;
             case 5:
-                printf("Consultar saldo de um investidor");
-                printf("Em breve..");          
-                break;
-            case 6:
-                printf("Consultar extrado de um investidor");
+                diviser();
+                printf("Excluir criptomoeda");
+                diviser();
                 printf("Em breve..");
                 break;
+            case 6:
+                diviser();
+                printf("Consultar saldo de um investidor");
+                diviser();
+                printf("Em breve..");          
+                break;
             case 7:
-                printf("Ver e Atualizar cotação de criptomoedas");
+                diviser();
+                printf("Consultar extrado de um investidor");
+                diviser();
                 printf("Em breve..");
                 break;
             case 8:
+                diviser();
+                printf("Ver e Atualizar cotacao de criptomoedas");
+                diviser();
+                printf("Em breve..");
+                break;
+            case 9:
+                diviser();
                 printf("Encerrando Sessao...\n");
+                break;
                 break;
             default:
                 diviser();
@@ -53,7 +70,7 @@ int main() {
                 diviser();
                 break;
         }
-    } while (option != 8);
+    } while (option != 9);
 
     return 0;
 }
