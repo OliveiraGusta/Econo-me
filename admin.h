@@ -31,8 +31,13 @@ void loginOrRegister(Admin *admin);
 void loginAdmin(Admin *admin);            
 void registerAdmin(Admin *admin);
 
-//FUNOCES DE USUARIO
+//FUNCOES DE USUARIO
 void registerUser();
+void deleteUser();
+void listUsers();
+void checkUserInfos(char userCPFtoDelete[]);
 
+//ARQUIVOS
+int userExists(const char userCPFtoDelete[]);
 
 #endif
