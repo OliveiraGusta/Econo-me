@@ -31,15 +31,11 @@ int main() {
                 break;
             case 4:
                 diviser();            
-                printf("\nCadastro de criptomoeda");
-                diviser();
-                printf("Em breve..");  
+                registerCripto();
                 break;
             case 5:
                 diviser();
-                printf("Excluir criptomoeda");
-                diviser();
-                printf("Em breve..");
+                listCripto();
                 break;
             case 6:
                 diviser();
