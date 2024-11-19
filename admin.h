@@ -45,16 +45,16 @@ void registerAdmin(Admin *admin);
 void registerUser();
 void deleteUser();
 void listUsers();
-void checkUserInfos(char userCPFtoDelete[]);
+void checkUserInfos(char userCPF[]);
 
 //FUNCOES CRIPTO
 void registerCripto();
 void listCripto();
-// void deleteCriptos();
-//void checkCriptosInfos(char criptoABREVtoDelete[]);
-//int criptoExists(const char criptoABREVtoDelete[]);
+void deleteCripto();
+void checkCriptosInfos(char criptoABREVtoDelete[]);
+int criptoExists(const char criptoABREVtoDelete[]);
 
 //ARQUIVOS
-int userExists(const char userCPFtoDelete[]);
+int userExists(const char userCPF[]);
 
 #endif
