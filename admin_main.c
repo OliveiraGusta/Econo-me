@@ -35,13 +35,11 @@ int main() {
                 break;
             case 5:
                 diviser();
-                listCripto();
+                deleteCripto();
                 break;
             case 6:
                 diviser();
-                printf("Consultar saldo de um investidor");
-                diviser();
-                printf("Em breve..");          
+                listCripto();         
                 break;
             case 7:
                 diviser();

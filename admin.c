@@ -300,7 +300,7 @@ void deleteUser() {
     }
 }
 
-int userExists(const char userCPFtoDelete[]){
+int userExists(const char userCPF[]){
     User user;
     int foundUser = 0;
     
@@ -312,7 +312,7 @@ int userExists(const char userCPFtoDelete[]){
     }
 
     while (fread(&user, sizeof(User), 1, file) == 1) {
-        if (strcmp(user.cpf, userCPFtoDelete) == 0) {
+        if (strcmp(user.cpf, userCPF) == 0) {
             foundUser = 1;
             fclose(file);
             break;
@@ -325,7 +325,7 @@ int userExists(const char userCPFtoDelete[]){
 
       return foundUser;
 }
-void checkUserInfos(char userCPFtoDelete[]){
+void checkUserInfos(char userCPF[]){
     User user;
     int foundUser = 0;
     
@@ -337,7 +337,7 @@ void checkUserInfos(char userCPFtoDelete[]){
     }
 
     while (fread(&user, sizeof(User), 1, file) == 1) {
-        if (strcmp(user.cpf, userCPFtoDelete) == 0) {
+        if (strcmp(user.cpf, userCPF) == 0) {
             foundUser = 1;
             fclose(file);
             break;
@@ -447,5 +447,142 @@ void listCripto(){
 
     fclose(file);
 }
+
+void deleteCripto() {
+    FILE *file = fopen("criptos.dat", "rb");
+    if (!file) {
+        printf("Erro ao abrir o arquivo de Criptos.\n");
+        return;
+    }
+
+    FILE *tempFile = fopen("tempcripto.dat", "wb");
+    if (!tempFile) {
+        printf("Erro na funcao de apagar.\n");
+        fclose(file);
+        return;
+    }
+
+    char criptoABREVtoDelete[6];
+    printf("\nDigite a Sigla da Cripto que deseja excluir: ");
+    scanf("%11s", criptoABREVtoDelete);
+
+    if (criptoExists(criptoABREVtoDelete)) {
+        checkCriptosInfos(criptoABREVtoDelete);
+        int option = 0;
+        printf("Deseja realmente excluir a Cripto com a Sigla %s:\n", criptoABREVtoDelete);
+        printf("1 - Excluir\n");
+        printf("2 - Cancelar\n");
+        diviser();
+
+        printf("Digite sua escolha: ");
+        scanf("%i", &option);
+
+        int criptoDeleted = 0;  
+        if (option == 1) {
+            Cripto criptoToDelete;
+
+            while (fread(&criptoToDelete, sizeof(Cripto), 1, file) == 1) {
+                if (strcmp(criptoToDelete.abrev, criptoABREVtoDelete) != 0) {
+                    fwrite(&criptoToDelete, sizeof(Cripto), 1, tempFile);
+                } else {
+                    criptoDeleted = 1;
+                }
+            }
+        } else if (option == 2) {
+            printf("Exclusão cancelada.\n");
+        } else {
+            printf("\nOpcao invalida\n");
+        }
+
+        fclose(file);
+        fclose(tempFile);
+
+        if (criptoDeleted) {
+            if (remove("criptos.dat") != 0) {
+                printf("Erro ao remover o arquivo original.\n");
+            } else if (rename("tempcripto.dat", "criptos.dat") != 0) {
+                printf("Erro ao renomear o arquivo temporário.\n");
+            } else {
+                printf("Cripto excluida com sucesso.\n");
+            }
+        } else {
+            remove("tempcripto.dat"); 
+        }
+    } else {
+        printf("\nCripto nao encontrada\n");
+        fclose(file);
+        fclose(tempFile);
+        remove("tempcripto.dat");
+    }
+}
+
+void checkCriptosInfos(char criptoABREVtoDelete[]) {
+    Cripto cripto;
+    int foundCripto = 0;
+
+    FILE *file = fopen("criptos.dat", "r+b");
+    if (file == NULL) {
+        printf("Erro ao abrir o arquivo de Criptos\n");
+        return; 
+    }
+
+    while (fread(&cripto, sizeof(Cripto), 1, file) == 1) {
+        if (strcmp(cripto.abrev, criptoABREVtoDelete) == 0) {
+            foundCripto = 1;
+            break; 
+        }
+    }
+
+    if (!foundCripto) {
+        printf("Cripto nao encontrada.\n");
+        fclose(file);  
+        return;
+    }
+
+    // LISTANDO CRIPTOS
+    printf("\nListando Criptos\n");
+    diviser();
+    
+    fseek(file, 0, SEEK_SET);
+    
+    while (fread(&cripto, sizeof(Cripto), 1, file) == 1) {
+        printf("ID: %d\n", cripto.id);
+        printf("Nome: %s\n", cripto.name);
+        printf("Sigla: %s\n", cripto.abrev);
+        printf("Cotacao Inicial: %.2f\n", cripto.priceInitial);
+        printf("Taxa de Compra: %.2f%%\n", cripto.buyFee);
+        printf("Taxa de Venda: %.2f%%\n", cripto.sellFee);
+        diviser();
+    }
+
+    fclose(file); 
+}
+
+int criptoExists(const char criptoABREVtoDelete[]) {
+    Cripto cripto;
+    int foundCripto = 0;
+    
+    FILE *file = fopen("criptos.dat", "rb");
+    if (file == NULL) {
+        printf("Erro ao abrir o arquivo\n");
+        fclose(file);
+        return 0;
+    }
+
+    while (fread(&cripto, sizeof(Cripto), 1, file) == 1) {
+        if (strcmp(cripto.abrev, criptoABREVtoDelete) == 0) {
+            foundCripto = 1;
+            fclose(file);
+            break;
+        }
+    }
+
+    if (!foundCripto) {
+        return 0;
+    } 
+
+      return foundCripto;
+}
+
 
 
