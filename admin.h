@@ -20,13 +20,23 @@ typedef struct {
     char password[6];
 } Admin;
 
+//STRUCT CRIPTOS
+typedef struct {
+    int id;
+    char name[15];
+    char abrev[6];
+    float priceInitial;
+    float buyFee;
+    float sellFee;
+} Cripto;
+
 
 //FERRAMENTAS
 void welcome();            
 void diviser();       
 void menu(int adminId); 
       
-//LOGIN E CADASTRASTO
+//LOGIN E CADASTRO
 void loginOrRegister(Admin *admin);
 void loginAdmin(Admin *admin);            
 void registerAdmin(Admin *admin);
@@ -36,6 +46,13 @@ void registerUser();
 void deleteUser();
 void listUsers();
 void checkUserInfos(char userCPFtoDelete[]);
+
+//FUNCOES CRIPTO
+void registerCripto();
+void listCripto();
+// void deleteCriptos();
+//void checkCriptosInfos(char criptoABREVtoDelete[]);
+//int criptoExists(const char criptoABREVtoDelete[]);
 
 //ARQUIVOS
 int userExists(const char userCPFtoDelete[]);

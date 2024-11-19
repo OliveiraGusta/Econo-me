@@ -364,3 +364,88 @@ void checkUserInfos(char userCPFtoDelete[]){
     
     fclose(file);
 }
+
+void registerCripto(){
+    FILE *file = fopen("criptos.dat", "rb"); 
+    if (!file) {
+        file = fopen("criptos.dat", "wb");  
+        if (!file) {
+            printf("Erro ao abrir o arquivo de Criptos.\n");
+            return;
+        }
+    }
+    Cripto cripto;
+   
+
+    printf("\nCadastro de Nova Criptomoeda\n");
+    diviser();
+
+    printf("Digite o nome: ");
+    scanf("%14s", cripto.name);
+
+    printf("Digite a Sigla: ");
+    scanf("%5s", cripto.abrev);
+
+    diviser();
+    printf("Digite a cotacao inicial: ");
+    scanf("%f", &cripto.priceInitial);
+
+    diviser();
+    printf("Digite a taxa de compra (ex: 1%% = 0.01): ");
+    scanf("%f", &cripto.buyFee);
+
+    diviser();
+    printf("Digite a taxa de venda (ex: 1%% = 0.01): ");
+    scanf("%f", &cripto.sellFee); 
+
+    file = fopen("criptos.dat", "ab");
+    if (!file) {
+        printf("Erro ao abrir o arquivo de Criptos.\n");
+        return;
+    }
+
+    fwrite(&cripto, sizeof(Cripto), 1, file);
+    fclose(file);
+
+    printf("\nCripto Registrada com Sucesso!\n");
+    diviser();
+    
+    printf("Criptomoeda cadastrada com sucesso:\n");
+    printf("ID: %d\n", cripto.id);
+    printf("Nome: %s\n", cripto.name);
+    printf("Sigla: %s\n", cripto.abrev);
+    printf("Cotação Inicial: %.2f\n", cripto.priceInitial);
+    printf("Taxa de Compra: %.2f%%\n", cripto.buyFee);
+    printf("Taxa de Venda: %.2f%%\n", cripto.sellFee);
+}
+
+void listCripto(){
+    FILE *file = fopen("criptos.dat", "rb"); 
+    if (!file) {
+        printf("Erro ao abrir o arquivo de Criptos.\n");
+        return;
+    }
+
+    Cripto cripto;
+    int foundCripto = 0; 
+    printf("\nListando Criptos\n");
+    diviser();
+    while (fread(&cripto, sizeof(Cripto), 1, file) == 1) {
+        foundCripto = 1;
+    printf("ID: %d\n", cripto.id);
+    printf("Nome: %s\n", cripto.name);
+    printf("Sigla: %s\n", cripto.abrev);
+    printf("Cotacao Inicial: %.2f\n", cripto.priceInitial);
+    printf("Taxa de Compra: %.2f%%\n", cripto.buyFee);
+    printf("Taxa de Venda: %.2f%%\n", cripto.sellFee);        
+    diviser();
+    }
+
+    if (!foundCripto) {
+        printf("Nenhum usuario encontrado.\n");
+    }
+
+    fclose(file);
+}
+
+
