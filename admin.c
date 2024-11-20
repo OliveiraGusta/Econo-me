@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include <time.h>
 
 void welcome() {
   printf("ECONO-ME CRIPTO\n");
@@ -558,7 +559,7 @@ void deleteCripto() {
     }
 }
 
-void checkCriptosInfos(char criptoABREVtoDelete[]) {
+void checkCriptosInfos(const char criptoABREVtoDelete[]) {
     Cripto cripto;
     int foundCripto = 0;
 
@@ -627,7 +628,7 @@ int criptoExists(const char criptoABREVtoDelete[]) {
 }
 
 // Função para buscar o ID do usuário a partir do CPF
-int getUserIdByCPF(const char cpf) {
+int getUserIdByCPF(char cpf[]) {
     FILE*file = fopen("users.dat", "rb");
     if (file == NULL) {
         printf("Erro ao acessar o arquivo de usuários.\n");
@@ -647,7 +648,7 @@ int getUserIdByCPF(const char cpf) {
 }
 
 // Função para mostrar o histórico de transações
-void showTransactionHistory(const char userCPF) {
+void showTransactionHistory(char userCPF[]) {
     int userId = getUserIdByCPF(userCPF); // Obtém o ID do usuário
     if (userId == -1) {
         printf("Usuário com CPF %s não encontrado.\n", userCPF);
@@ -702,9 +703,59 @@ void checkUserTransactionHistory() {
     showTransactionHistory(userCPF);
 }
 
-int main() {
-    checkUserTransactionHistory();
-    return 0;
+
+void updateCryptoPrices() {
+    srand(time(0));  
+    FILE *file = fopen("criptos.dat", "rb+");
+    if (!file) {
+        printf("Erro ao abrir o arquivo de Criptos.\n");
+        return;
+    }
+
+    Cripto cripto;
+    int foundCripto = 0;
+
+    printf("\nCotacao Atual de Criptomoedas\n");
+    diviser();
+
+    while (fread(&cripto, sizeof(Cripto), 1, file) == 1) {
+        float oldCriptoPrice = cripto.price;
+
+        // ATUALIZA O PREÇO
+        cripto.price += cripto.price * ((rand() % 11 - 5) / 100.0);
+
+        // INFOMRÇÕES CRIPTO
+        printf("1 %s (%s) : R$ %.2f ", cripto.name, cripto.abrev, cripto.price);
+        if (oldCriptoPrice != 0) {
+            if (cripto.price > oldCriptoPrice) {
+                printf("(+%.2f%%)\n", ((cripto.price - oldCriptoPrice) / oldCriptoPrice) * 100);
+            } else if (cripto.price < oldCriptoPrice) {
+                printf("(-%.2f%%)\n", ((oldCriptoPrice - cripto.price) / oldCriptoPrice) * 100);
+            } else {
+                printf("(=)\n");
+            }
+        } else {
+            printf("\n");
+        }
+
+        printf("Taxa de Compra: %.2f%%\n", cripto.buyFee);
+        printf("Taxa de Venda: %.2f%%\n", cripto.sellFee);
+
+        diviser();
+        foundCripto = 1;
+
+        fseek(file, -sizeof(Cripto), SEEK_CUR);
+
+        fwrite(&cripto, sizeof(Cripto), 1, file);
+
+        fflush(file);
+    }
+
+    if (!foundCripto) {
+        printf("Nenhuma cripto encontrada.\n");
+    }
+
+    fclose(file);
 }
 
 

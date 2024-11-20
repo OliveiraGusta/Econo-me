@@ -47,9 +47,7 @@ int main() {
                 break;
             case 8:
                 diviser();
-                printf("Ver e Atualizar cotacao de criptomoedas");
-                diviser();
-                printf("Em breve..");
+                updateCryptoPrices();
                 break;
             case 9:
                 diviser();
