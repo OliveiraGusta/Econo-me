@@ -39,7 +39,7 @@ int main() {
                 break;
             case 6:
                 diviser();
-                listCripto();         
+                checkUser();
                 break;
             case 7:
                 diviser();

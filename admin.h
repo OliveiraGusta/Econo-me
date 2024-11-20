@@ -50,6 +50,7 @@ void registerUser();
 void deleteUser();
 void listUsers();
 void checkUserInfos(char userCPF[]);
+void checkUser();
 
 //FUNCOES CRIPTO
 void registerCripto();
