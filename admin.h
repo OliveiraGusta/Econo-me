@@ -62,15 +62,16 @@ void listUsers();
 void checkUserInfos(char userCPF[]);
 void checkUser();
 void checkUserTransactionHistory();
-void showTransactionHistory(const char userCPF);
-int getUserIdByCPF(const char cpf);
+void showTransactionHistory(char userCPF[]);
+int getUserIdByCPF(char cpf[]);
 
 //FUNCOES CRIPTO
 void registerCripto();
 void listCripto();
 void deleteCripto();
-void checkCriptosInfos(char criptoABREVtoDelete[]);
+void checkCriptosInfos(const char criptoABREVtoDelete[]);
 int criptoExists(const char criptoABREVtoDelete[]);
+void updateCryptoPrices();
 
 //ARQUIVOS
 int userExists(const char userCPF[]);
