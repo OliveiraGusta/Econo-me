@@ -331,6 +331,15 @@ int userExists(const char userCPF[]){
 
       return foundUser;
 }
+
+
+void checkUser(){
+    char userCPF[12];
+    printf("\nDigite o CPF do usuario que você deseja ver as informacoes: ");
+    scanf("%12s", userCPF);
+    checkUserInfos(userCPF);
+}
+
 void checkUserInfos(char userCPF[]){
     User user;
     int foundUser = 0;
@@ -354,13 +363,16 @@ void checkUserInfos(char userCPF[]){
         return;
     }
     
-    // Exibe a carteira do usuário
-    printf("\nSua Carteira\n");
-    diviser();
+    printf("\nNome: %s\n", user.name);
     printf("CPF: %s\n", user.cpf);
+    diviser();
+
+    // Exibe a carteira do usuário
+    printf("\nCarteira do investidor\n");
+    diviser();
     printf("\nSaldo\n");
     diviser();
-    printf("Reais: %.2f\n", user.balanceReal);
+    printf("R$%.2f\n", user.balanceReal);
 
     for (int i = 0; i < user.cryptoCount; i++) {
         int cryptoId = user.balances[i].cryptoId;
@@ -374,8 +386,8 @@ void checkUserInfos(char userCPF[]){
         }
 
         Cripto cripto;
-        char cryptoName[15] = "---";  // Inicializa com valor padrão
-        char cryptoAbrev[6] = "---"; // Inicializa com valor padrão
+        char cryptoName[15] = "---";  
+        char cryptoAbrev[6] = "---"; 
 
         // Busca pelo nome e sigla da criptomoeda pelo ID
         while (fread(&cripto, sizeof(Cripto), 1, cryptoFile) == 1) {
