@@ -2,19 +2,10 @@
 #define USER_H
 #include <stdio.h>
 
-// VALORES INICIAIS E TAXAS DAS CRIPTOS
-#define BITCOIN_INITIAL 354798.40
-#define BITCOIN_BUY_FEE 0.02    // 2% 
-#define BITCOIN_SELL_FEE 0.03   // 3% 
-
-#define ETHEREUM_INITIAL 14461.70
-#define ETHEREUM_BUY_FEE 0.01   // 1% 
-#define ETHEREUM_SELL_FEE 0.02  // 2% 
-
-#define RIPPLE_INITIAL 3.22
-#define RIPPLE_BUY_FEE 0.01     // 1% 
-#define RIPPLE_SELL_FEE 0.01    // 1% 
-
+typedef struct {
+    int cryptoId;        
+    float balance;       
+} UserCryptoBalance;
 
 //STRUCT DOS DADOS DO USUÁRIO
 typedef struct {
@@ -22,11 +13,21 @@ typedef struct {
     char cpf[12];
     char password[6];
     char name[15];
-    float balanceReal;
-    float balanceBitcoin;
-    float balanceEthereum;
-    float balanceRipple;
+    float balanceReal;         
+    UserCryptoBalance balances[100]; 
+    int cryptoCount;                
 } User;
+
+
+//STRUCT CRIPTOS
+typedef struct {
+    int id;
+    char name[15];
+    char abrev[6];
+    float price;
+    float buyFee;
+    float sellFee;
+} Cripto;
 
 //STRUCT DOS DADOS DO EXTRATO
 typedef struct {
@@ -37,7 +38,6 @@ typedef struct {
     char cryptoType[10];    
     char date[20]; 
 } Transaction;
-
 
 //FERRAMENTAS
 void welcome();            

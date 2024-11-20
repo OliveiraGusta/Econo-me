@@ -21,7 +21,7 @@ int main() {
                 checkUserInfos(user.id);
                 break;
             case 2:
-               showTransactionHistory(user.id);
+                showTransactionHistory(user.id);
                 break;
             case 3:
                 deposit(user.id);
