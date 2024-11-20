@@ -2,34 +2,38 @@
 #define ADMIN_H
 #include <stdio.h>
 
-//STRUCT DOS DADOS DO USUÁRIO
-typedef struct {
-    int id;
-    char cpf[12];
-    char password[6];
-    char name[15];
-    float balanceReal;
-    float balanceBitcoin;
-    float balanceEthereum;
-    float balanceRipple;
-} User;
 
 typedef struct {
     int id;
     char cpf[12];
     char password[6];
 } Admin;
+//STRUCT DOS DADOS DO USUÁRIO
+
+typedef struct {
+    int cryptoId;        
+    float balance;       
+} UserCryptoBalance;
+
+typedef struct {
+    int id;
+    char cpf[12];
+    char password[6];
+    char name[15];
+    float balanceReal;         
+    UserCryptoBalance balances[100]; 
+    int cryptoCount;                
+} User;
 
 //STRUCT CRIPTOS
 typedef struct {
     int id;
     char name[15];
     char abrev[6];
-    float priceInitial;
+    float price;
     float buyFee;
     float sellFee;
 } Cripto;
-
 
 //FERRAMENTAS
 void welcome();            
