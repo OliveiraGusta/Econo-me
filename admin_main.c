@@ -43,9 +43,7 @@ int main() {
                 break;
             case 7:
                 diviser();
-                printf("Consultar extrado de um investidor");
-                diviser();
-                printf("Em breve..");
+                checkUserTransactionHistory();
                 break;
             case 8:
                 diviser();

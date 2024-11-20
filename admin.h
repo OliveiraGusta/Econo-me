@@ -35,6 +35,16 @@ typedef struct {
     float sellFee;
 } Cripto;
 
+//STRUCT DOS DADOS DO EXTRATO
+typedef struct {
+    int userId;      
+    char transactionType[20];  
+    float amount;     
+    float cryptoAmount;
+    char cryptoType[10];    
+    char date[20]; 
+} Transaction;
+
 //FERRAMENTAS
 void welcome();            
 void diviser();       
@@ -51,6 +61,9 @@ void deleteUser();
 void listUsers();
 void checkUserInfos(char userCPF[]);
 void checkUser();
+void checkUserTransactionHistory();
+void showTransactionHistory(const char userCPF);
+int getUserIdByCPF(const char cpf);
 
 //FUNCOES CRIPTO
 void registerCripto();
@@ -61,5 +74,6 @@ int criptoExists(const char criptoABREVtoDelete[]);
 
 //ARQUIVOS
 int userExists(const char userCPF[]);
+
 
 #endif

@@ -626,5 +626,86 @@ int criptoExists(const char criptoABREVtoDelete[]) {
       return foundCripto;
 }
 
+// Função para buscar o ID do usuário a partir do CPF
+int getUserIdByCPF(const char cpf) {
+    FILE*file = fopen("users.dat", "rb");
+    if (file == NULL) {
+        printf("Erro ao acessar o arquivo de usuários.\n");
+        return -1; // Indica erro
+    }
+
+    User user;
+    while (fread(&user, sizeof(User), 1, file) == 1) {
+        if (strcmp(user.cpf, cpf) == 0) {
+            fclose(file);
+            return user.id; // Retorna o ID do usuário
+        }
+    }
+
+    fclose(file);
+    return -1; // Retorna -1 se não encontrar
+}
+
+// Função para mostrar o histórico de transações
+void showTransactionHistory(const char userCPF) {
+    int userId = getUserIdByCPF(userCPF); // Obtém o ID do usuário
+    if (userId == -1) {
+        printf("Usuário com CPF %s não encontrado.\n", userCPF);
+        return;
+    }
+
+    FILE*file = fopen("transactions.dat", "rb");
+    if (file == NULL) {
+        printf("Erro ao acessar o arquivo de transações.\n");
+        return;
+    }
+
+    Transaction transaction;
+    int found = 0;
+    printf("\nSeu Extrato\n");
+    printf("----------------------------\n");
+
+    while (fread(&transaction, sizeof(Transaction), 1, file) == 1) {
+        if (transaction.userId == userId) {
+            found = 1;
+            printf("%s\n", transaction.transactionType);
+
+            if ((strcmp(transaction.transactionType, "Deposito") == 0) || (strcmp(transaction.transactionType, "Saque") == 0)) {
+                printf("%cR$ %.2f\n", 
+                    (strcmp(transaction.transactionType, "Saque") == 0) ? '-' : '+', 
+                    transaction.amount);
+            } else if ((strcmp(transaction.transactionType, "Compra") == 0) || (strcmp(transaction.transactionType, "Venda") == 0)) {
+                printf("%cR$ %.2f %c%s %.4f\n",
+                       (strcmp(transaction.transactionType, "Compra") == 0) ? '-' : '+',
+                       transaction.amount,
+                       (strcmp(transaction.transactionType, "Compra") == 0) ? '+' : '-',
+                       transaction.cryptoType, transaction.cryptoAmount);
+            }
+
+            printf("%s\n", transaction.date);
+            printf("----------------------------\n");
+        }
+    }
+
+    if (!found) {
+        printf("Nenhuma transação encontrada.\n");
+    }
+
+    fclose(file);
+}
+
+// Função principal para demonstrar o uso
+void checkUserTransactionHistory() {
+    char userCPF[12];
+    printf("\nDigite o CPF do usuário que você deseja ver o extrato: ");
+    scanf("%11s", userCPF); // 11 caracteres + 1 para o terminador nulo
+    showTransactionHistory(userCPF);
+}
+
+int main() {
+    checkUserTransactionHistory();
+    return 0;
+}
+
 
 
