@@ -190,16 +190,16 @@ void registerUser() {
     scanf("%5s", user.password);  
 
     
-    // Inicializa saldo em reais e saldos de criptomoedas
+    
     user.balanceReal = 0.0;
-    user.cryptoCount = 0; // Nenhuma criptomoeda no momento do cadastro
-    // Inicializa a lista de saldos de criptomoedas (caso precise inicializar com algum valor)
+    user.cryptoCount = 0; 
+    
     for (int i = 0; i < 100; i++) {
-        user.balances[i].cryptoId = -1; // ID inválido para criptos não atribuídas
+        user.balances[i].cryptoId = -1; 
         user.balances[i].balance = 0.0;
     }
 
-    // Salva o usuário no arquivo
+    // SALVA O USER
     file = fopen("users_account.dat", "ab");
     if (!file) {
         printf("Erro ao abrir o arquivo de usuários.\n");
@@ -266,7 +266,7 @@ void deleteUser() {
         printf("Digite sua escolha: ");
         scanf("%i", &option);
 
-        int userDeleted = 0;  // Marcação para exclusão
+        int userDeleted = 0;  
         if (option == 1) {
             User userToDelete;
 
@@ -283,7 +283,7 @@ void deleteUser() {
             printf("\nOpcao invalida\n");
         }
 
-        // Fechar ambos os arquivos antes de qualquer operação de sistema
+        // FECHA ARQUIVOS
         fclose(file);
         fclose(tempFile);
 
@@ -296,7 +296,7 @@ void deleteUser() {
                 printf("Usuario excluido com sucesso.\n");
             }
         } else {
-            remove("temp.dat"); // Limpeza do temporário se o usuário não foi encontrado
+            remove("temp.dat"); 
         }
     } else {
         printf("\nUsuario nao encontrado\n");
@@ -367,7 +367,7 @@ void checkUserInfos(char userCPF[]){
     printf("CPF: %s\n", user.cpf);
     diviser();
 
-    // Exibe a carteira do usuário
+    //CARTEIRA
     printf("\nCarteira do investidor\n");
     diviser();
     printf("\nSaldo\n");
@@ -389,7 +389,7 @@ void checkUserInfos(char userCPF[]){
         char cryptoName[15] = "---";  
         char cryptoAbrev[6] = "---"; 
 
-        // Busca pelo nome e sigla da criptomoeda pelo ID
+    
         while (fread(&cripto, sizeof(Cripto), 1, cryptoFile) == 1) {
             if (cripto.id == cryptoId) {
                 strncpy(cryptoName, cripto.name, sizeof(cryptoName) - 1);
@@ -399,7 +399,7 @@ void checkUserInfos(char userCPF[]){
         }
         fclose(cryptoFile);
 
-        // Exibe o saldo da criptomoeda
+        // SALDO
         printf("%s (%s): %.7f\n", cryptoName, cryptoAbrev, balance);
     }
     diviser();
@@ -408,7 +408,7 @@ void checkUserInfos(char userCPF[]){
 }
 
 void registerCripto() {
-    FILE *file = fopen("criptos.dat", "ab+"); // Abre em modo append e leitura
+    FILE *file = fopen("criptos.dat", "ab+"); 
     if (!file) {
         printf("Erro ao abrir o arquivo de Criptos.\n");
         return;
@@ -418,14 +418,12 @@ void registerCripto() {
     Cripto temp;
     int lastId = 0;
 
-    // Encontra o maior ID já registrado
     while (fread(&temp, sizeof(Cripto), 1, file) == 1) {
         if (temp.id > lastId) {
             lastId = temp.id;
         }
     }
 
-    // Define o próximo ID
     cripto.id = lastId + 1;
 
     printf("\nCadastro de Nova Criptomoeda\n");
@@ -449,7 +447,6 @@ void registerCripto() {
     printf("Digite a taxa de venda (ex: 1%% = 0.01): ");
     scanf("%f", &cripto.sellFee);
 
-    // Escreve o registro no arquivo
     fwrite(&cripto, sizeof(Cripto), 1, file);
     fclose(file);
 

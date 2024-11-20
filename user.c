@@ -100,13 +100,11 @@ void registerUser(User *user) {
     int userCount = 0;
     User tempUser;
 
-    // Conta o número de usuários registrados
     while (fread(&tempUser, sizeof(User), 1, file) == 1) {
         userCount++;
     }
     fclose(file);
 
-    // Verifica limite de usuários
     if (userCount >= 10) {
         diviser();
         printf("\nLimite de 10 usuários atingido\n");
@@ -115,7 +113,7 @@ void registerUser(User *user) {
         return;
     }
 
-    // Gera ID único para o novo usuário
+    // GERA ID UNICO
     user->id = 1; 
     file = fopen("users_account.dat", "rb");  
     if (file != NULL) {
@@ -127,7 +125,7 @@ void registerUser(User *user) {
         fclose(file);
     }
 
-    // Coleta informações do novo usuário
+    // COLETA INFORMAÇOES
     printf("\nFaça seu Cadastro\n");
     diviser();
     printf("Digite seu nome: ");
@@ -182,14 +180,14 @@ void checkUserInfos(int userId) {
     printf("%s\n", user.cpf);
     diviser();
 
-    // Exibe a carteira do usuário
+    // CARTEIRA
     printf("\nSua Carteira\n");
     diviser();
     printf("\nSaldo\n");
     diviser();
     printf("R$%.2f\n", user.balanceReal);
 
-    // Exibe o saldo de criptomoedas dinamicamente
+    // SALDO
     for (int i = 0; i < user.cryptoCount; i++) {
         int cryptoId = user.balances[i].cryptoId;
         float balance = user.balances[i].balance;
@@ -202,10 +200,9 @@ void checkUserInfos(int userId) {
         }
 
         Cripto cripto;
-        char cryptoName[15] = "---";  // Inicializa com valor padrão
-        char cryptoAbrev[6] = "---"; // Inicializa com valor padrão
+        char cryptoName[15] = "---";  
+        char cryptoAbrev[6] = "---"; 
 
-        // Busca pelo nome e sigla da criptomoeda pelo ID
         while (fread(&cripto, sizeof(Cripto), 1, cryptoFile) == 1) {
             if (cripto.id == cryptoId) {
                 strncpy(cryptoName, cripto.name, sizeof(cryptoName) - 1);
@@ -215,7 +212,7 @@ void checkUserInfos(int userId) {
         }
         fclose(cryptoFile);
 
-        // Exibe o saldo da criptomoeda
+        // SALDO CRIPTOS
         printf("%s (%s): %.7f\n", cryptoName, cryptoAbrev, balance);
     }
     diviser();
@@ -326,9 +323,8 @@ void withdraw(int userId){
   }
 }
 
-// Cryptos
 void updateCryptoPrices() {
-    srand(time(0));  // Inicializa o gerador de números aleatórios
+    srand(time(0));  
     FILE *file = fopen("criptos.dat", "rb+");
     if (!file) {
         printf("Erro ao abrir o arquivo de Criptos.\n");
@@ -344,10 +340,10 @@ void updateCryptoPrices() {
     while (fread(&cripto, sizeof(Cripto), 1, file) == 1) {
         float oldCriptoPrice = cripto.price;
 
-        // Atualiza o preço
+        // ATUALIZA O PREÇO
         cripto.price += cripto.price * ((rand() % 11 - 5) / 100.0);
 
-        // Exibe informações da cripto
+        // INFOMRÇÕES CRIPTO
         printf("1 %s (%s) : R$ %.2f ", cripto.name, cripto.abrev, cripto.price);
         if (oldCriptoPrice != 0) {
             if (cripto.price > oldCriptoPrice) {
@@ -367,13 +363,10 @@ void updateCryptoPrices() {
         diviser();
         foundCripto = 1;
 
-        // Volta para a posição do registro no arquivo
         fseek(file, -sizeof(Cripto), SEEK_CUR);
 
-        // Escreve o registro atualizado
         fwrite(&cripto, sizeof(Cripto), 1, file);
 
-        // Garante que o ponteiro vá para o próximo registro após escrita
         fflush(file);
     }
 
@@ -385,7 +378,7 @@ void updateCryptoPrices() {
 }
 
 void buyCrypto(int userId) {
-    updateCryptoPrices(); // Atualiza os preços das criptomoedas
+    updateCryptoPrices(); 
     User user;
     Cripto cripto;
     int foundUser = 0, optionCripto = 0, confirmBuy = 0;
@@ -397,7 +390,7 @@ void buyCrypto(int userId) {
         return;
     }
 
-    // Localiza o usuário pelo ID
+
     while (fread(&user, sizeof(User), 1, file) == 1) {
         if (user.id == userId) {
             foundUser = 1;
@@ -411,13 +404,11 @@ void buyCrypto(int userId) {
         return;
     }
 
-    // Exibir informações do usuário
     printf("\nSaldo Atual\n");
     printf("R$ %.2f (Reais)\n", user.balanceReal);
     printf("\nSaldo Atual de Criptomoedas\n");
     diviser();
     
-    // Exibe o nome e a sigla das criptos
     FILE *cryptoFile = fopen("criptos.dat", "rb");
     if (cryptoFile == NULL) {
         printf("Erro ao carregar lista de criptomoedas.\n");
@@ -426,18 +417,17 @@ void buyCrypto(int userId) {
     }
 
     for (int i = 0; i < user.cryptoCount; i++) {
-        // Encontrando a cripto correspondente ao cryptoId
         while (fread(&cripto, sizeof(Cripto), 1, cryptoFile) == 1) {
             if (cripto.id == user.balances[i].cryptoId) {
                 printf("%s (%s): Saldo %.7f\n", cripto.name, cripto.abrev, user.balances[i].balance);
                 break;
             }
         }
-        fseek(cryptoFile, 0, SEEK_SET); // Volta para o início do arquivo para a próxima iteração
+        fseek(cryptoFile, 0, SEEK_SET); 
     }
     diviser();
 
-    // Listar criptomoedas disponíveis para compra
+    // LISTA CRIPTOS PARA COMPRA
     printf("\nFaça sua compra\n");
     while (fread(&cripto, sizeof(Cripto), 1, cryptoFile) == 1) {
         printf("%d - %s (%s)\n", cripto.id, cripto.name, cripto.abrev);
@@ -450,7 +440,7 @@ void buyCrypto(int userId) {
     printf("Digite o valor que deseja comprar em R$: ");
     scanf("%f", &amount);
 
-    // Localiza a criptomoeda pelo ID
+    // LOCALIZA A CRIPTO
     cryptoFile = fopen("criptos.dat", "rb");
     Cripto selectedCripto;
     int foundCrypto = 0;
@@ -469,7 +459,7 @@ void buyCrypto(int userId) {
         return;
     }
 
-    // Calcula custo total com taxa
+    // CALCULA CUSTO TOTAL COM TAXA
     fee = amount * selectedCripto.buyFee;
     totalCost = amount + fee;
 
@@ -490,7 +480,7 @@ void buyCrypto(int userId) {
         return;
     }
 
-    // Atualiza saldo do usuário
+    // ATUALIZA SALDO
     user.balanceReal -= totalCost;
     int cryptoBalanceIndex = -1;
     for (int i = 0; i < user.cryptoCount; i++) {
@@ -500,7 +490,7 @@ void buyCrypto(int userId) {
         }
     }
 
-    if (cryptoBalanceIndex == -1) { // Criptomoeda não encontrada, adiciona nova
+    if (cryptoBalanceIndex == -1) { 
         cryptoBalanceIndex = user.cryptoCount;
         user.balances[cryptoBalanceIndex].cryptoId = selectedCripto.id;
         user.balances[cryptoBalanceIndex].balance = 0;
@@ -512,10 +502,10 @@ void buyCrypto(int userId) {
     printf("\nCompra realizada!\n");
     printf("Novo saldo de %s: %.7f\n", selectedCripto.abrev, user.balances[cryptoBalanceIndex].balance);
 
-    // Registra transação
+
     addTransaction(user.id, "Compra", totalCost, amount / selectedCripto.price, selectedCripto.name);
 
-    // Atualiza dados do usuário no arquivo
+
     fseek(file, -sizeof(User), SEEK_CUR);
     fwrite(&user, sizeof(User), 1, file);
     fclose(file);
@@ -532,7 +522,7 @@ void sellCrypto(int userId) {
         return;
     }
 
-    // Localiza o usuário pelo ID
+    // LOCALIZA USER
     while (fread(&user, sizeof(User), 1, file) == 1) {
         if (user.id == userId) {
             found = 1;
@@ -545,7 +535,7 @@ void sellCrypto(int userId) {
         return;
     }
 
-    // Exibe os saldos do usuário
+    // SALDOS
     printf("\nVender Criptomoedas\n");
     diviser();
 
@@ -554,7 +544,7 @@ void sellCrypto(int userId) {
     printf("\nSaldo Atual de Criptos\n");
     diviser();
 
-    // Exibe todas as criptos que o usuário possui
+    // CRIPTOS
     for (int i = 0; i < user.cryptoCount; i++) {
         int cryptoId = user.balances[i].cryptoId;
         float balance = user.balances[i].balance;
@@ -567,14 +557,13 @@ void sellCrypto(int userId) {
         }
 
         Cripto cripto;
-        // Inicializa com valores padrão
+        // INICIA COM VALORES PADROES
         char cryptoName[15] = "---";
         char cryptoAbrev[6] = "---";
 
-        // Busca pelo nome e sigla da criptomoeda pelo ID
+        // BUSCA PELO NOME E SIGLA
         while (fread(&cripto, sizeof(Cripto), 1, cryptoFile) == 1) {
             if (cripto.id == cryptoId) {
-                // Atualiza com os dados da cripto
                 strncpy(cryptoName, cripto.name, sizeof(cryptoName) - 1);
                 strncpy(cryptoAbrev, cripto.abrev, sizeof(cryptoAbrev) - 1);
                 break;
@@ -582,7 +571,7 @@ void sellCrypto(int userId) {
         }
         fclose(cryptoFile);
 
-        // Exibe o saldo da criptomoeda
+        // SALDO DA CRIPTO
         printf("%s (%s): %.7f\n", cryptoName, cryptoAbrev, balance);
     }
     diviser();
@@ -591,7 +580,6 @@ void sellCrypto(int userId) {
     printf("Digite o número da criptomoeda que deseja vender: ");
     scanf("%i", &optionCripto);
 
-    // Verifica se a opção é válida
     if (optionCripto < 1 || optionCripto > user.cryptoCount) {
         diviser();
         printf("\nOpção inválida\n");
@@ -600,9 +588,9 @@ void sellCrypto(int userId) {
         return;
     }
 
-    // Pergunta o valor a ser vendido
+    // VALOR A SER VENDIDO
     printf("Digite o valor que deseja vender em ");
-    int cryptoId = user.balances[optionCripto - 1].cryptoId;  // Pega o ID da criptomoeda escolhida
+    int cryptoId = user.balances[optionCripto - 1].cryptoId; 
     float balance = user.balances[optionCripto - 1].balance;
 
     FILE *cryptoFile = fopen("criptos.dat", "rb");
@@ -617,8 +605,8 @@ void sellCrypto(int userId) {
     float sellFee = 0;
     while (fread(&cripto, sizeof(Cripto), 1, cryptoFile) == 1) {
         if (cripto.id == cryptoId) {
-            cryptoPrice = cripto.price;  // Preço da criptomoeda
-            sellFee = cripto.sellFee;    // Taxa de venda
+            cryptoPrice = cripto.price;  
+            sellFee = cripto.sellFee;   
             break;
         }
     }
@@ -628,7 +616,7 @@ void sellCrypto(int userId) {
     scanf("%f", &amount);
     diviser();
 
-    // Verifica se o usuário tem saldo suficiente para a venda
+    // VERIRICA SE SALDO É SUFICIENTE
     fee = (amount * cryptoPrice) * sellFee;
     totalCost = (amount * cryptoPrice) - fee;
 
@@ -638,7 +626,7 @@ void sellCrypto(int userId) {
         return;
     }
 
-    // Exibe a confirmação de venda
+    // CONFIRMAÇÃO DE VENDA
     printf("\nVocê deseja vender %.7f em ", amount);
     printf("%s (%s) + taxa R$%.2f?\n", cripto.name, cripto.abrev, fee);
     diviser();
@@ -651,7 +639,7 @@ void sellCrypto(int userId) {
     scanf("%i", &confirmSell);
 
     if (confirmSell == 1) {
-        // Atualiza o saldo do usuário
+        // ATUALIZA SALDO
         user.balanceReal += totalCost;
         user.balances[optionCripto - 1].balance -= amount;
 
